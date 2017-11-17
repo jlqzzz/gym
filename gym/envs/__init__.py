@@ -1,5 +1,16 @@
 from gym.envs.registration import registry, register, make, spec
 
+
+# Customed
+# ----------------------------------------
+
+register(
+    id='ODEReacher-v0',
+    entry_point='gym.envs.customed:ODEReacherEnv',
+    max_episode_steps=300,
+    reward_threshold=200.0,
+)
+
 # Algorithmic
 # ----------------------------------------
 
@@ -204,6 +215,13 @@ register(
 # 2D
 
 register(
+    id='ReacherObsDone-v1',
+    entry_point='gym.envs.mujoco:ReacherObsDoneEnv',
+    max_episode_steps=80,
+    reward_threshold=10,
+)
+
+register(
     id='Reacher-v1',
     entry_point='gym.envs.mujoco:ReacherEnv',
     max_episode_steps=50,
@@ -275,6 +293,13 @@ register(
 register(
     id='Ant-v1',
     entry_point='gym.envs.mujoco:AntEnv',
+    max_episode_steps=1000,
+    reward_threshold=6000.0,
+)
+
+register(
+    id='AntDist-v1',
+    entry_point='gym.envs.mujoco:AntDistEnv',
     max_episode_steps=1000,
     reward_threshold=6000.0,
 )
