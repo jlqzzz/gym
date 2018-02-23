@@ -84,7 +84,14 @@ register(
 
 register(
     id='MountainCarContinuous-v0',
-    entry_point='gym.envs.classic_control:Continuous_MountainCarEnv',
+    entry_point='gym.envs.classic_c[[ontrol:Continuous_MountainCarEnv',
+    max_episode_steps=999,
+    reward_threshold=90.0,
+)
+
+register(
+    id='TwoMountainCarContinuous-v0',
+    entry_point='gym.envs.classic_control:Continuous_TwoMountainCarEnv',
     max_episode_steps=999,
     reward_threshold=90.0,
 )
@@ -222,8 +229,29 @@ register(
 )
 
 register(
+    id='ReacherSpeed-v1',
+    entry_point='gym.envs.mujoco:ReacherSpeed',
+    max_episode_steps=80,
+    reward_threshold=10,
+)
+
+register(
     id='Reacher-v1',
     entry_point='gym.envs.mujoco:ReacherEnv',
+    max_episode_steps=50,
+    reward_threshold=-3.75,
+)
+
+register(
+    id='ReacherDone-v1',
+    entry_point='gym.envs.mujoco:ReacherDoneEnv',
+    max_episode_steps=50,
+    reward_threshold=-3.75,
+)
+
+register(
+    id='TwoReacher-v1',
+    entry_point='gym.envs.mujoco:TwoReacherEnv',
     max_episode_steps=50,
     reward_threshold=-3.75,
 )
@@ -238,6 +266,13 @@ register(
 register(
     id='Thrower-v0',
     entry_point='gym.envs.mujoco:ThrowerEnv',
+    max_episode_steps=100,
+    reward_threshold=0.0,
+)
+
+register(
+    id='TwoThrower-v0',
+    entry_point='gym.envs.mujoco:TwoThrowerEnv',
     max_episode_steps=100,
     reward_threshold=0.0,
 )
@@ -266,6 +301,13 @@ register(
 register(
     id='HalfCheetah-v1',
     entry_point='gym.envs.mujoco:HalfCheetahEnv',
+    max_episode_steps=1000,
+    reward_threshold=4800.0,
+)
+
+register(
+    id='TwoHalfCheetah-v1',
+    entry_point='gym.envs.mujoco:TwoHalfCheetahEnv',
     max_episode_steps=1000,
     reward_threshold=4800.0,
 )
