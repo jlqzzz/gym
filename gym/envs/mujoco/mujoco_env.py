@@ -37,6 +37,8 @@ class MujocoEnv(gym.Env):
         self.init_qpos = self.model.data.qpos.ravel().copy()
         self.init_qvel = self.model.data.qvel.ravel().copy()
         observation, _reward, done, _info = self._step(np.zeros(self.model.nu))
+        # observation, _reward, done, _info = self._step(0)
+
         assert not done
         self.obs_dim = observation.size
 
