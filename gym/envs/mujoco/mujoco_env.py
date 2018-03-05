@@ -85,7 +85,7 @@ class MujocoEnv(gym.Env):
             self.viewer_setup()
         return ob
 
-    def set_state(self, qpos, qvel):
+    def set_state(self, qpos, qvel): 
         assert qpos.shape == (self.model.nq,) and qvel.shape == (self.model.nv,)
         self.model.data.qpos = qpos
         self.model.data.qvel = qvel
