@@ -243,6 +243,13 @@ register(
 )
 
 register(
+    id='VisualReacher-v1',
+    entry_point='gym.envs.mujoco:VisualReacherEnv',
+    max_episode_steps=150,
+    reward_threshold=-3.75,
+)
+
+register(
     id='ReacherPos-v1',
     entry_point='gym.envs.mujoco:ReacherPosEnv',
     max_episode_steps=500,
@@ -252,16 +259,17 @@ register(
 register(
     id='UR5Reacher-v1',
     entry_point='gym.envs.mujoco:UR5ReacherEnv',
-    max_episode_steps=100,
+    max_episode_steps=150,
     reward_threshold=-3.75,
 )
 
 register(
-    id='UR5ReacherPos-v1',
-    entry_point='gym.envs.mujoco:UR5ReacherPosEnv',
-    max_episode_steps=100,
+    id='UR5ReacherAcc-v1',
+    entry_point='gym.envs.mujoco:UR5ReacherAccEnv',
+    max_episode_steps=1000,
     reward_threshold=-3.75,
 )
+
 
 register(
     id='ReacherDone-v1',

@@ -32,13 +32,13 @@
     </default>
 
   	<!-- Barrett -->
-    <default class="wam/bhand">
-			<joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1" frictional="true" frictionloss=".001"/>
+    <!-- default class="wam/bhand">
+			<joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1"  frictionloss=".001"/>
 			<geom type="mesh" contype="0" conaffinity="1" group="0" rgba="0.5 0.6 0.7 1"/>			
 		</default>
 		<default class="wam/bhandViz">
 			<geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.8 0.8 1"/>
-		</default>
+		</default-->
   </default>
   
   <asset>
@@ -85,7 +85,7 @@
 	      	<inertial pos="0 0 0" euler="0 0 0" mass="3.7" 
 			  diaginertia="0.010267495893 0.010267495893 0.0072" />
 	      	<geom name="shoulder_g" material="RobMat"  type="mesh" mesh="shoulder"/>
-		<joint  name="shoulder_pan_joint" type="hinge" axis="0 0 1" limited="true" frictional="true"
+		<joint  name="shoulder_pan_joint" type="hinge" axis="0 0 1" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 	
@@ -93,7 +93,7 @@
 	      	<inertial euler="0 0 0"  pos="0 0 0.28" mass="8.393"
 			  diaginertia="0.22689067591 0.22689067591 0.0151074" />
 	      	<geom name="upper_arm_g" material="RobMat"  type="mesh" mesh="upper_arm"/>
-		<joint  name="shoulder_lift_joint" type="hinge" axis="0 1 0" limited="true" frictional="true"
+		<joint  name="shoulder_lift_joint" type="hinge" axis="0 1 0" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 	
@@ -101,7 +101,7 @@
 	      	<inertial euler="0 0 0"  pos="0 0 0.25" mass="2.275"
 			  diaginertia="0.049443313556 0.049443313556 0.004095" />
 	      	<geom name="forearm_g" material="RobMat"  type="mesh" mesh="forearm"/>
-		<joint  name="elbow_joint" type="hinge" axis="0 1 0" limited="true" frictional="true"
+		<joint  name="elbow_joint" type="hinge" axis="0 1 0" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 
@@ -109,7 +109,7 @@
 	      	<inertial euler="0 0 0"  pos="0 0 0" mass="1.219"
 			  diaginertia="0.111172755531 0.111172755531 0.21942" />
 	      	<geom name="wrist1_g" material="RobMat"  type="mesh" mesh="wrist_1"/>
-		<joint  name="wrist_1_joint" type="hinge" axis="0 1 0" limited="true" frictional="true"
+		<joint  name="wrist_1_joint" type="hinge" axis="0 1 0" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 
@@ -117,7 +117,7 @@
 	      	<inertial euler="0 0 0"  pos="0 0 0" mass="1.219"
 			  diaginertia="0.111172755531 0.111172755531 0.21942" />
 	      	<geom name="wrist2_g" material="RobMat"  type="mesh" mesh="wrist_2"/>
-		<joint  name="wrist_2_joint" type="hinge" axis="0 0 1" limited="true" frictional="true"
+		<joint  name="wrist_2_joint" type="hinge" axis="0 0 1" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 
@@ -125,7 +125,7 @@
 	      	<inertial euler="0 0 0"  pos="0 0 0" mass="0.1879"
 			  diaginertia="0.0171364731454 0.0171364731454 0.033822" />
 	      	<geom name="wrist3_g" material="RobMat"  type="mesh" mesh="wrist_3"/>
-		<joint  name="wrist_3_joint" type="hinge" axis="0 1 0" limited="true" frictional="true"
+		<joint  name="wrist_3_joint" type="hinge" axis="0 1 0" limited="true" 
 			range="-3.14159265 3.14159265" 			
 			damping="10.0" frictionloss="0"/>
 	
