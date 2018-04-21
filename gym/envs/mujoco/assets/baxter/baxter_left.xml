@@ -331,17 +331,11 @@
             </body>
         </body>
         <!-- Target -->
-        <body name="target_right" pos="0 0 0">
-            <joint axis="1 0 0" name="target_r_x" type="slide" range="-2 2"/>
-            <joint axis="0 1 0" name="target_r_y" type="slide" range="-2 2"/>
-            <joint axis="0 0 1" name="target_r_z" type="slide" range="-2 2"/>
-            <geom conaffinity="0" contype="0" name="target_right" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".05" type="sphere"/>
-        </body>
-        <body name="target_left" pos="0 0 0">
-            <joint axis="1 0 0" name="target_l_x" type="slide" range="-2 2"/>
-            <joint axis="0 1 0" name="target_l_y" type="slide" range="-2 2"/>
-            <joint axis="0 0 1" name="target_l_z" type="slide" range="-2 2"/>
-            <geom conaffinity="0" contype="0" name="target_left" pos="0 0 0" rgba="0.2 0.2 0.9 1" size=".05" type="sphere"/>
+        <body name="target" pos="0 0 0">
+            <joint axis="1 0 0" name="target_x" type="slide" range="-2 2"/>
+            <joint axis="0 1 0" name="target_y" type="slide" range="-2 2"/>
+            <joint axis="0 0 1" name="target_z" type="slide" range="-2 2"/>
+            <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.2 0.2 0.9 1" size=".05" type="sphere"/>
         </body>
     </worldbody>
     <!--
@@ -352,13 +346,13 @@
     r/l_gripper_r_finger_joint
     -->
     <actuator>
-        <motor name="right_s0_torque" joint="right_s0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <!-- <motor name="right_s0_torque" joint="right_s0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="right_s1_torque" joint="right_s1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="right_e0_torque" joint="right_e0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="right_e1_torque" joint="right_e1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="right_w0_torque" joint="right_w0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="right_w1_torque" joint="right_w1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-        <motor name="right_w2_torque" joint="right_w2" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_w2_torque" joint="right_w2" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/> -->
     
         <motor name="left_s0_torque" joint="left_s0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
         <motor name="left_s1_torque" joint="left_s1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>

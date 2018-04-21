@@ -73,6 +73,8 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             np.sin(theta),
             self.sim.data.qpos.flat[2:],
             self.sim.data.qvel.flat[:2],
+<<<<<<< HEAD
+=======
             self.get_body_com("fingertip") - self.get_body_com("target")
         ])
 
@@ -136,6 +138,7 @@ class VisualReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             np.sin(theta),
             self.sim.data.qpos.flat[2:],
             self.sim.data.qvel.flat[:2],
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
             self.get_body_com("fingertip") - self.get_body_com("target")
         ])
 
@@ -519,6 +522,35 @@ class UR5ReacherAccEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         self.dist = np.linalg.norm(self.get_body_com("ee_link")-self.get_body_com("target"))
         self.pre_dist = 0
         self.speed = np.zeros(6)
+<<<<<<< HEAD
+
+    def step(self, a):
+        a = np.clip(a, a_max=0.4, a_min=-0.4)
+        # custom 
+        try:
+            self.pre_dist = self.dist
+            self.dist = np.linalg.norm(self.get_body_com("ee_link")-self.get_body_com("target"))
+
+            # reward_addon = 20*(self.pre_dist - self.dist)
+            reward_addon = 5*(self.pre_dist - self.dist)
+            reward_dist = - self.dist
+            reward_ctrl = 0.1*(
+                -0.1*(
+                    np.abs(a[0]*self.speed[0]) + 
+                    np.abs(a[1]*self.speed[1]) +
+                    np.abs(a[2]*self.speed[2]) +
+                    np.abs(a[3]*self.speed[3]) +
+                    np.abs(a[4]*self.speed[4]) +
+                    np.abs(a[5]*self.speed[5])
+                ) + 
+                -0.01*(np.abs(a[0]) + np.abs(a[1]) + np.abs(a[2]) + np.abs(a[3]) + np.abs(a[4]) + np.abs(a[5]))
+            ) 
+            # -2.8707 2.8314
+            if self.sim.data.qpos[2] < 0:
+                reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
+            else:
+                reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.83) < 0.01 else 0.0
+=======
 
     def step(self, a):
         a = np.clip(a, a_max=0.4, a_min=-0.4)
@@ -648,18 +680,33 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
             # else:
             #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.83) < 0.01 else 0.0
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
             if np.abs(reward_dist) < 0.01:
                 reward_dist *= 2
             reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
             # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
 
             reward_show = - self.dist # - np.square(a).sum()
+<<<<<<< HEAD
+            # integration
+            pos_ctl = self.sim.data.qpos.flat[:-3] + self.speed*self.dt + 0.5*a*(self.dt**2)
+            pos_ctl[pos_ctl > np.pi] -= 2*np.pi
+            pos_ctl[pos_ctl < -np.pi] += 2*np.pi
+            self.speed += a * self.dt 
+=======
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
         except:
             reward = 0
             reward_dist = 0
             reward_ctrl = 0
             reward_show = 0
+<<<<<<< HEAD
+            pos_ctl = np.array([np.pi/2, -1.1, 2.1, -1.0, 1.40, 0.76])
+
+        self.do_simulation(pos_ctl, self.frame_skip)
+=======
         self.do_simulation(a, self.frame_skip)
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
         ob = self._get_obs()
         done = False
         return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
@@ -668,6 +715,8 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         self.viewer.cam.trackbodyid = 1
         self.viewer.cam.distance = 3.0
 
+<<<<<<< HEAD
+=======
     def reset_model(self):
         # ur5 max length=1
         qpos = self.init_qpos
@@ -763,10 +812,20 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         self.viewer.cam.trackbodyid = 1
         self.viewer.cam.distance = 3.0
 
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
     def reset_model(self):
         # ur5 max length=1
         qpos = self.init_qpos
         while True:
+<<<<<<< HEAD
+            self.goal_x = self.np_random.uniform(low=-0.5, high=0.5)
+            self.goal_y = self.np_random.uniform(low=-0.8, high=-0.5)
+            self.goal_z = self.np_random.uniform(low=0.2, high=0.8)
+            self.goal = np.array([self.goal_x, self.goal_y, self.goal_z])
+            if np.linalg.norm(self.goal) < 0.9:
+                break
+        qpos[:-3] = np.array([np.pi/2, -1.1, 2.1, -1.0, 1.40, 0.76])  # critical
+=======
             self.goal_x = self.np_random.uniform(low=.5, high=1.)
             self.goal_y = self.np_random.uniform(low=-.5, high=.5)
             # if abs(self.goal_y) < 0.2:
@@ -782,12 +841,31 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
              0.7, 0.5, 0, 1.1, 0, 0, 0,
              0, 0  # left gripper
         ])  # critical
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1
         qpos[-3:] = self.goal
         self.set_state(qpos, self.init_qvel)
         return self._get_obs()
 
     def _get_obs(self):
         theta = self.sim.data.qpos.flat[:-3]
+<<<<<<< HEAD
+        try:
+            return np.concatenate([
+                np.cos(theta),
+                np.sin(theta),
+                self.sim.data.qpos.flat[-3:],
+                # self.speed,
+                self.get_body_com("ee_link") - self.get_body_com("target")
+            ])
+        except:
+            return np.concatenate([
+                np.cos(theta),
+                np.sin(theta),
+                self.sim.data.qpos.flat[-3:],
+                # np.zeros(6),
+                self.get_body_com("ee_link") - self.get_body_com("target")
+            ])
+=======
         return np.concatenate([
             np.cos(theta),
             np.sin(theta),
@@ -927,5 +1005,4 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.get_body_com("right_gripper_base") - self.get_body_com("target_right"),
             self.get_body_com("left_gripper_base") - self.get_body_com("target_left")
         ])
-
-        
+>>>>>>> c7bdd413275e55b9a1826e3d1dbc48115c9fc4b1

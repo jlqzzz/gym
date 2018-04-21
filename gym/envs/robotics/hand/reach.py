@@ -50,7 +50,7 @@ def goal_distance(goal_a, goal_b):
 class HandReachEnv(hand_env.HandEnv, utils.EzPickle):
     def __init__(
         self, distance_threshold=0.01, n_substeps=20, relative_control=False,
-        initial_qpos=DEFAULT_INITIAL_QPOS, reward_type='sparse',
+        initial_qpos=DEFAULT_INITIAL_QPOS, reward_type='',
     ):
         self.distance_threshold = distance_threshold
         self.reward_type = reward_type
@@ -59,6 +59,8 @@ class HandReachEnv(hand_env.HandEnv, utils.EzPickle):
             self, 'hand/reach.xml', n_substeps=n_substeps, initial_qpos=initial_qpos,
             relative_control=relative_control)
         utils.EzPickle.__init__(self)
+
+        self.pre_dist = 0
 
     def _get_achieved_goal(self):
         goal = [self.sim.data.get_site_xpos(name) for name in FINGERTIP_SITE_NAMES]
@@ -72,7 +74,7 @@ class HandReachEnv(hand_env.HandEnv, utils.EzPickle):
         if self.reward_type == 'sparse':
             return -(d > self.distance_threshold).astype(np.float32)
         else:
-            return -d
+            return -d #- reward_da
 
     # RobotEnv methods
     # ----------------------------
@@ -86,6 +88,9 @@ class HandReachEnv(hand_env.HandEnv, utils.EzPickle):
         self.palm_xpos = self.sim.data.body_xpos[self.sim.model.body_name2id('robot0:palm')].copy()
 
     def _get_obs(self):
+
+
+        
         robot_qpos, robot_qvel = robot_get_obs(self.sim)
         achieved_goal = self._get_achieved_goal().ravel()
         observation = np.concatenate([robot_qpos, robot_qvel, achieved_goal])
