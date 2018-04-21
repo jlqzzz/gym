@@ -257,6 +257,13 @@ register(
 )
 
 register(
+    id='BaxterReacher-v1',
+    entry_point='gym.envs.mujoco:BaxterReacherEnv',
+    max_episode_steps=150,
+    reward_threshold=-3.75,
+)
+
+register(
     id='BaxterRightReacher-v1',
     entry_point='gym.envs.mujoco:BaxterRightReacherEnv',
     max_episode_steps=150,
