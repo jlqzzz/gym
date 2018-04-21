@@ -19,6 +19,9 @@
 <mujoco model="baxter(v1.31)">
     <compiler coordinate="local" angle="radian" meshdir="meshes/" strippath="false" />
     <size njmax="795" nconmax="250" nstack="631875" />
+    
+    <option   timestep="0.01" iterations='20'
+	    gravity="0 0 0" viscosity="0"/>
    
    <asset>
         <mesh name="base_link" file="torso/base_link.STL"/>
@@ -53,7 +56,7 @@
 		</default>
    </default>
 
-   <contact>       
+   <!--contact>       
         <exclude body1="right_upper_shoulder" body2="torso"/>
 		<exclude body1="right_upper_shoulder" body2="right_upper_elbow"/>
 		<exclude body1="right_lower_shoulder" body2="torso"/>
@@ -66,7 +69,7 @@
 		<exclude body1="collision_head_link_2" body2="torso"/>
 		<exclude body1="r_gripper_r_finger" body2="r_gripper_l_finger"/>
 		<exclude body1="l_gripper_r_finger" body2="l_gripper_l_finger"/>
-    </contact>
+    </contact-->
 	
     <worldbody>
         <light directional="false" cutoff="90" exponent="1" diffuse="1 1 1" specular="0 0 0" pos="1 0 1.5" dir="-1 0 -2.5"/>
@@ -128,28 +131,28 @@
                     <inertial pos="0 0 0" mass="0.0001" diaginertia="1e-008 1e-008 1e-008" />
                     <body name="right_upper_shoulder" pos="0.055695 0 0.011038">
                         <inertial pos="0.01783 0.00086 0.19127" quat="0.975667 0.0673303 -0.206117 0.0325173" mass="5.70044" diaginertia="0.0498344 0.0377511 0.0331351" />
-                        <joint name="right_s0" type="hinge" pos="0 0 0" axis="0 0 1" range="-1.70168 1.70168"/><!-- maxvel="1.5" />-->
+                        <joint name="right_s0" type="hinge" pos="0 0 0" axis="0 0 1" range="-1.70168 1.70168" /><!-- maxvel="1.5" />-->
                         <geom class="viz" rgba="0.5 0.1 0.1 1" mesh="S0"/>
                         <geom type="cylinder" size="0.06 0.1361" rgba="0.5 0.1 0.1 1" pos="0 0 0.1361"/>
                         <body name="right_lower_shoulder" pos="0.069 0 0.27035" quat="0.707107 -0.707107 0 0">
                             <inertial pos="0.06845 0.00269 -0.00529" quat="0.447487 0.536948 0.56425 0.439391" mass="3.22698" diaginertia="0.0278991 0.0212327 0.0112937" />
-                            <joint name="right_s1" type="hinge" pos="0 0 0" axis="0 0 1" range="-2.147 1.047"/><!-- maxvel="1.5" />-->
+                            <joint name="right_s1" type="hinge" pos="0 0 0" axis="0 0 1" range="-2.147 1.047" /><!-- maxvel="1.5" />-->
                             <geom class="viz" rgba="0.5 0.1 0.1 1" mesh="S1"/>
                             <geom type="cylinder" size="0.06 0.06" rgba="0.5 0.1 0.1 1" pos="0 0 0" />
                             <body name="right_upper_elbow" pos="0.102 0 0" quat="0.5 0.5 0.5 0.5">
                                 <inertial pos="-0.00276 0.00132 0.18086" quat="0.838995 -0.0423128 -0.121287 0.52876" mass="4.31272" diaginertia="0.0287695 0.0273625 0.011409" />
-                                <joint name="right_e0" type="hinge" pos="0 0 0" axis="0 0 1" range="-3.05418 3.05418"/><!-- maxvel="1.5" />-->
+                                <joint name="right_e0" type="hinge" pos="0 0 0" axis="0 0 1" range="-3.05418 3.05418" /><!-- maxvel="1.5" />-->
                                 <geom class="viz" rgba="0.5 0.1 0.1 1" mesh="E0"/>
                                 <geom type="cylinder" size="0.06 0.0535" rgba="0.5 0.1 0.1 1" pos="0 0 -0.0535" />
 								<geom name="right_upper_elbow_visual" type="cylinder" size="0.06 0.1365" pos="0 0 0.1365" />
                                 <body name="right_lower_elbow" pos="0.069 0 0.26242" quat="0.5 -0.5 -0.5 -0.5">
                                     <inertial pos="0.02611 0.00159 -0.01117" quat="0.440433 0.577149 0.562777 0.395221" mass="2.07206" diaginertia="0.0132096 0.00950002 0.00685697" />
-                                    <joint name="right_e1" type="hinge" pos="0 0 0" axis="0 0 1" range="-0.05 2.618"/><!-- maxvel="1.5" />-->
+                                    <joint name="right_e1" type="hinge" pos="0 0 0" axis="0 0 1" range="-0.05 2.618" /><!-- maxvel="1.5" />-->
                                     <geom class="viz" rgba="0.5 0.1 0.1 1" mesh="E1"/>
                                     <geom type="cylinder" size="0.06 0.05" rgba="0.5 0.1 0.1 1" pos="0 0 0" />
                                     <body name="right_upper_forearm" pos="0.10359 0 0" quat="0.5 0.5 0.5 0.5">
                                         <inertial pos="-0.00168 0.0046 0.13952" quat="0.892709 -0.0256256 0.00446984 0.449882" mass="2.24665" diaginertia="0.016916 0.0165511 0.00371123" />
-                                        <joint name="right_w0" type="hinge" pos="0 0 0" axis="0 0 1" range="-3.059 3.059"/><!-- maxvel="4" />-->
+                                        <joint name="right_w0" type="hinge" pos="0 0 0" axis="0 0 1" range="-3.059 3.059" /><!-- maxvel="4" />-->
                                         <geom class="viz" rgba="0.5 0.1 0.1 1" mesh="W0"/>
                                         <geom type="cylinder" size="0.06 0.044" rgba="0.5 0.1 0.1 1" pos="0 0 -0.044" />
 										<geom name="right_upper_forearm_visual" type="cylinder" size="0.06 0.1036" pos="0 0 0.1" />

@@ -418,6 +418,10 @@ class ReacherObsDoneEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 ##########################################################
 
 class UR5ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+    '''
+    Notice:
+    1. when start, face UR5, facing dir is [y], right is [x], top is [z] 
+    '''
     def __init__(self):
         utils.EzPickle.__init__(self)
         mujoco_env.MujocoEnv.__init__(self, 'ur5/ur5.xml', 2)
@@ -682,9 +686,9 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 break
         qpos[:-3] = np.array([
              0, # head
-             -0.7, 0.5, 0, 1.1, 0, 0, 0,
+             6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0, # right gripper
-             -0.8, -0.5, -0.1, 2., 0, 0, 0,
+             -6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0  # left gripper
         ])  # critical
         qpos[-3:] = self.goal
@@ -777,9 +781,9 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 break
         qpos[:-3] = np.array([
              0, # head
-             0.8, -0.5, 0.1, 2., 0, 0, 0,
+             6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0, # right gripper
-             0.7, 0.5, 0, 1.1, 0, 0, 0,
+             -6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0  # left gripper
         ])  # critical
         qpos[-3:] = self.goal
@@ -804,6 +808,14 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     2. origin is the base of baxter
     3. Baxter arm length \leq 1.2m
     4. init pose: 
+        (0) stable init pos(others may failed when started) 
+        qpos[:-6] = np.array([
+             0, # head
+             6.4, 0, 0, 1.5, 0, 0, 0,
+             0, 0, # right gripper
+             -6.4, 0, 0, 1.5, 0, 0, 0,
+             0, 0  # left gripper
+        ])  # critical
         (1) two arms init pose
         np.array([
              0, # head
@@ -912,11 +924,12 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 break
         qpos[:-6] = np.array([
              0, # head
-             0.8, -0.5, 0.1, 2., 0, 0, 0,
+             6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0, # right gripper
-             -0.8, -0.5, -0.1, 2., 0, 0, 0,
+             -6.4, 0, 0, 1.5, 0, 0, 0,
              0, 0  # left gripper
         ])  # critical
+
         qpos[-6:] = np.concatenate([self.goal_r, self.goal_l])
         self.set_state(qpos, self.init_qvel)
         return self._get_obs()
@@ -924,12 +937,13 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def _get_obs(self):
         theta = self.sim.data.qpos.flat[:-6]
         return np.concatenate([
-            np.cos(theta),
-            np.sin(theta),
-            self.sim.data.qpos.flat[-6:],
-            self.sim.data.qvel.flat[:-6],
-            self.get_body_com("right_gripper_base") - self.get_body_com("target_right"),
-            self.get_body_com("left_gripper_base") - self.get_body_com("target_left")
+            theta,
+            # np.cos(theta),
+            # np.sin(theta),
+            # self.sim.data.qpos.flat[-6:],
+            # self.sim.data.qvel.flat[:-6],
+            # self.get_body_com("right_gripper_base") - self.get_body_com("target_right"),
+            # self.get_body_com("left_gripper_base") - self.get_body_com("target_left")
         ])
 
         

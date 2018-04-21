@@ -20,7 +20,7 @@
 	    eulerseq ="xyz"/>
 
   <option   timestep="0.01" iterations='20'
-	    gravity="0 0 -9.8" viscosity="0"/>
+	    gravity="0 0 0" viscosity="0"/>
 
   <default>
     <joint damping="1" limited="true"/>
