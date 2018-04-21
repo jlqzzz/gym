@@ -639,7 +639,7 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_addon = 50*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*np.abs(a*self.sim.data.qvel.flat[-7:]).sum()+ 
+                -0.1*np.abs(a*self.sim.data.qvel.flat[10:17]).sum()+ 
                 -0.01*np.abs(a).sum()
             ) 
             # -2.8707 2.8314
@@ -730,10 +730,10 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.dist = np.linalg.norm(self.get_body_com("right_gripper_base")-self.get_body_com("target"))
 
             # reward_addon = 20*(self.pre_dist - self.dist)
-            reward_addon = 50*(self.pre_dist - self.dist)
+            reward_addon = 1*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*np.abs(a*self.sim.data.qvel.flat[:7]).sum()+ 
+                -0.1*np.abs(a*self.sim.data.qvel.flat[1:8]).sum()+ 
                 -0.01*np.abs(a).sum()
             ) 
             # -2.8707 2.8314
@@ -828,7 +828,8 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         mujoco_env.MujocoEnv.__init__(self, 'baxter/baxter.xml', 2)
         self.dist_r = np.linalg.norm(self.get_body_com("right_gripper_base")-self.get_body_com("target_right"))
         self.dist_l = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target_left"))
-        self.pre_dist = 0
+        self.pre_dist_l = 0
+        self.pre_dist_r = 0
 
     def step(self, a):
         # origin version
@@ -857,7 +858,10 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 - self.dist_r - self.dist_l)
             reward_dist = - self.dist_r - self.dist_l
             reward_ctrl = 0.1*(
-                -0.1*np.abs(a*self.sim.data.qvel.flat).sum()+ 
+                -0.1*np.abs(a*np.concatenate([
+                    self.sim.data.qvel.flat[1:8],
+                    self.sim.data.qvel.flat[10:17],
+                    ])).sum()+ 
                 -0.01*np.abs(a).sum()
             )
             # -2.8707 2.8314
@@ -871,7 +875,7 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
             # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
 
-            reward_show = - self.dist # - np.square(a).sum()
+            reward_show = - self.dist_r - self.dist_l # - np.square(a).sum()
         except:
             reward = 0
             reward_dist = 0
