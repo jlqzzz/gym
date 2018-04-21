@@ -330,5 +330,36 @@
                 </body>
             </body>
         </body>
+        <!-- Target -->
+        <body name="target" pos="0 0 0">
+            <joint axis="1 0 0" name="target_x" type="slide" range="-2 2"/>
+            <joint axis="0 1 0" name="target_y" type="slide" range="-2 2"/>
+            <joint axis="0 0 1" name="target_z" type="slide" range="-2 2"/>
+            <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".03" type="sphere"/>
+        </body>
     </worldbody>
+    <!--
+    s 0 1 
+    e 0 1
+    w 0 1 2
+    r/l_gripper_l_finger_joint
+    r/l_gripper_r_finger_joint
+    -->
+    <actuator>
+        <motor name="right_s0_torque" joint="right_s0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_s1_torque" joint="right_s1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_e0_torque" joint="right_e0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_e1_torque" joint="right_e1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_w0_torque" joint="right_w0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_w1_torque" joint="right_w1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="right_w2_torque" joint="right_w2" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+    
+        <motor name="left_s0_torque" joint="left_s0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_s1_torque" joint="left_s1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_e0_torque" joint="left_e0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_e1_torque" joint="left_e1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_w0_torque" joint="left_w0" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_w1_torque" joint="left_w1" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+        <motor name="left_w2_torque" joint="left_w2" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
+    </actuator>
 </mujoco>

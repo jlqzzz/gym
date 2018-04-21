@@ -606,3 +606,199 @@ class UR5ReacherAccEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 # np.zeros(6),
                 self.get_body_com("ee_link") - self.get_body_com("target")
             ])
+
+
+class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+    def __init__(self):
+        utils.EzPickle.__init__(self)
+        mujoco_env.MujocoEnv.__init__(self, 'baxter/baxter.xml', 2)
+        self.dist = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target"))
+        self.pre_dist = 0
+
+    def step(self, a):
+        # origin version
+        # vec = self.get_body_com("ee_link")-self.get_body_com("target")
+        # reward_addon = 0
+        # reward_dist = - np.linalg.norm(vec) # np.clip(1.0/np.linalg.norm(vec), a_min = 0, a_max=50)
+        # reward_ctrl = - np.square(a).sum()
+        # reward = reward_dist + reward_ctrl + reward_addon
+        # reward_show = reward_dist + reward_ctrl
+        # 
+        # self.do_simulation(a, self.frame_skip)
+        # ob = self._get_obs()
+        # done = False
+        # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
+
+
+        # custom 
+        try:
+            a = np.concatenate([np.zeros(7), a])
+            self.pre_dist = self.dist
+            self.dist = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target"))
+
+            # reward_addon = 20*(self.pre_dist - self.dist)
+            reward_addon = 50*(self.pre_dist - self.dist)
+            reward_dist = - self.dist
+            reward_ctrl = 0.1*(
+                -0.1*(
+                    np.abs(a[7]*self.sim.data.qvel.flat[7]) + 
+                    np.abs(a[8]*self.sim.data.qvel.flat[8]) +
+                    np.abs(a[9]*self.sim.data.qvel.flat[9]) +
+                    np.abs(a[10]*self.sim.data.qvel.flat[10]) +
+                    np.abs(a[11]*self.sim.data.qvel.flat[11]) +
+                    np.abs(a[12]*self.sim.data.qvel.flat[12]) + 
+                    np.abs(a[13]*self.sim.data.qvel.flat[13])
+                ) + 
+                -0.01*(np.abs(a[7]) + np.abs(a[8]) + np.abs(a[9]) + np.abs(a[10]) + np.abs(a[11]) + np.abs(a[12]) + np.abs(a[13]))
+            ) 
+            # -2.8707 2.8314
+            reward_stuck = 0
+            # if self.sim.data.qpos[2] < 0:
+            #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
+            # else:
+            #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.83) < 0.01 else 0.0
+            if np.abs(reward_dist) < 0.01:
+                reward_dist *= 2
+            reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
+            # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
+
+            reward_show = - self.dist # - np.square(a).sum()
+        except:
+            reward = 0
+            reward_dist = 0
+            reward_ctrl = 0
+            reward_show = 0
+
+        self.do_simulation(a, self.frame_skip)
+        ob = self._get_obs()
+        done = False
+        return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
+
+    def viewer_setup(self):
+        self.viewer.cam.trackbodyid = 1
+        self.viewer.cam.distance = 3.0
+
+    def reset_model(self):
+        # ur5 max length=1
+        qpos = self.init_qpos
+        while True:
+            self.goal_x = self.np_random.uniform(low=-0.8, high=-0.5)
+            self.goal_y = self.np_random.uniform(low=-0.5, high=0.5)
+            # if abs(self.goal_y) < 0.2:
+            #     continue
+            self.goal_z = self.np_random.uniform(low=0.2, high=0.8)
+            self.goal = np.array([self.goal_x, self.goal_y, self.goal_z])
+            if np.linalg.norm(self.goal) < 0.9:
+                break
+        # qpos[:-3] = np.array([0, -1.1, 2.1, -1.0, 1.40, 0.76])  # critical
+        qpos[-3:] = self.goal
+        self.set_state(qpos, self.init_qvel)
+        return self._get_obs()
+
+    def _get_obs(self):
+        theta = self.sim.data.qpos.flat[:-3]
+        return np.concatenate([
+            np.cos(theta),
+            np.sin(theta),
+            self.sim.data.qpos.flat[-3:],
+            self.sim.data.qvel.flat[:-3],
+            self.get_body_com("left_gripper_base") - self.get_body_com("target")
+        ])
+
+
+class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
+    def __init__(self):
+        utils.EzPickle.__init__(self)
+        mujoco_env.MujocoEnv.__init__(self, 'baxter/baxter.xml', 2)
+        self.dist = np.linalg.norm(self.get_body_com("right_gripper_base")-self.get_body_com("target"))
+        self.pre_dist = 0
+
+    def step(self, a):
+        # origin version
+        # vec = self.get_body_com("ee_link")-self.get_body_com("target")
+        # reward_addon = 0
+        # reward_dist = - np.linalg.norm(vec) # np.clip(1.0/np.linalg.norm(vec), a_min = 0, a_max=50)
+        # reward_ctrl = - np.square(a).sum()
+        # reward = reward_dist + reward_ctrl + reward_addon
+        # reward_show = reward_dist + reward_ctrl
+        # 
+        # self.do_simulation(a, self.frame_skip)
+        # ob = self._get_obs()
+        # done = False
+        # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
+
+
+        # custom 
+        try:
+            a = np.concatenate([a, np.zeros(7)])
+            self.pre_dist = self.dist
+            self.dist = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target"))
+
+            # reward_addon = 20*(self.pre_dist - self.dist)
+            reward_addon = 50*(self.pre_dist - self.dist)
+            reward_dist = - self.dist
+            reward_ctrl = 0.1*(
+                -0.1*(
+                    np.abs(a[0]*self.sim.data.qvel.flat[0]) + 
+                    np.abs(a[1]*self.sim.data.qvel.flat[1]) +
+                    np.abs(a[2]*self.sim.data.qvel.flat[2]) +
+                    np.abs(a[3]*self.sim.data.qvel.flat[3]) +
+                    np.abs(a[4]*self.sim.data.qvel.flat[4]) +
+                    np.abs(a[5]*self.sim.data.qvel.flat[5]) + 
+                    np.abs(a[6]*self.sim.data.qvel.flat[6])
+                ) + 
+                -0.01*(np.abs(a[0]) + np.abs(a[1]) + np.abs(a[2]) + np.abs(a[3]) + np.abs(a[4]) + np.abs(a[5]) + np.abs(a[6]))
+            ) 
+            # -2.8707 2.8314
+            reward_stuck = 0
+            # if self.sim.data.qpos[2] < 0:
+            #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
+            # else:
+            #     reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.83) < 0.01 else 0.0
+            if np.abs(reward_dist) < 0.01:
+                reward_dist *= 2
+            reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
+            # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
+
+            reward_show = - self.dist # - np.square(a).sum()
+        except:
+            reward = 0
+            reward_dist = 0
+            reward_ctrl = 0
+            reward_show = 0
+
+        self.do_simulation(a, self.frame_skip)
+        ob = self._get_obs()
+        done = False
+        return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
+
+    def viewer_setup(self):
+        self.viewer.cam.trackbodyid = 1
+        self.viewer.cam.distance = 3.0
+
+    def reset_model(self):
+        # ur5 max length=1
+        qpos = self.init_qpos
+        while True:
+            self.goal_x = self.np_random.uniform(low=-0.8, high=-0.5)
+            self.goal_y = self.np_random.uniform(low=-0.5, high=0.5)
+            # if abs(self.goal_y) < 0.2:
+            #     continue
+            self.goal_z = self.np_random.uniform(low=0.2, high=0.8)
+            self.goal = np.array([self.goal_x, self.goal_y, self.goal_z])
+            if np.linalg.norm(self.goal) < 0.9:
+                break
+        # qpos[:-3] = np.array([0, -1.1, 2.1, -1.0, 1.40, 0.76])  # critical
+        qpos[-3:] = self.goal
+        self.set_state(qpos, self.init_qvel)
+        return self._get_obs()
+
+    def _get_obs(self):
+        theta = self.sim.data.qpos.flat[:-3]
+        return np.concatenate([
+            np.cos(theta),
+            np.sin(theta),
+            self.sim.data.qpos.flat[-3:],
+            self.sim.data.qvel.flat[:-3],
+            self.get_body_com("right_gripper_base") - self.get_body_com("target")
+        ])

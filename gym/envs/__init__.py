@@ -257,6 +257,20 @@ register(
 )
 
 register(
+    id='BaxterRightReacher-v1',
+    entry_point='gym.envs.mujoco:BaxterRightReacherEnv',
+    max_episode_steps=150,
+    reward_threshold=-3.75,
+)
+
+register(
+    id='BaxterLeftReacher-v1',
+    entry_point='gym.envs.mujoco:BaxterLeftReacherEnv',
+    max_episode_steps=150,
+    reward_threshold=-3.75,
+)
+
+register(
     id='UR5Reacher-v1',
     entry_point='gym.envs.mujoco:UR5ReacherEnv',
     max_episode_steps=150,
@@ -434,7 +448,7 @@ for reward_type in ['sparse', 'dense']:
         id='HandReach{}-v0'.format(suffix),
         entry_point='gym.envs.robotics:HandReachEnv',
         kwargs=kwargs,
-        max_episode_steps=50,
+        max_episode_steps=200,
     )
 
     register(
