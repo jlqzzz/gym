@@ -1,0 +1,32 @@
+<mujoco>
+  <asset>
+	<mesh file="base.stl"/>
+	<mesh file="shoulder.stl"/>
+	<mesh file="upper_arm.stl"/>
+	<mesh file="forearm.stl"/>
+	<mesh file="wrist_1.stl"/>
+	<mesh file="wrist_2.stl"/>
+	<mesh file="wrist_3.stl"/>
+
+	<material name="GndMat" specular=".3" shininess=".3" reflectance="0.3" rgba="0.5 0.5 0.8  1"/>
+	<material name="RobMat" specular=".3" shininess=".5" reflectance="0.5" rgba="0.7 0.7 0.7  1"/>
+	<material name="GriMat" specular=".3" shininess=".5" reflectance="0.5" rgba="0.8 0.4 0.4  1"/>
+	<material name="FinMat" specular=".3" shininess=".5" reflectance="0.5" rgba="0.1 0.1 0.1  1"/>
+  	
+  	<!-- Barrett -->
+<!--  	<mesh file="bhand_palm_fine.stl"/>-->
+		<!--<mesh file="bhand_palm_link_convex_decomposition_p1.stl"/>-->
+		<!--<mesh file="bhand_palm_link_convex_decomposition_p2.stl"/>-->
+		<!--<mesh file="bhand_palm_link_convex_decomposition_p3.stl"/>-->
+		<!--<mesh file="bhand_palm_link_convex_decomposition_p4.stl"/>-->
+		<!--<mesh file="bhand_finger_prox_link_fine.stl"/>-->
+		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p1.stl"/>-->
+		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p2.stl"/>-->
+		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p3.stl"/>-->
+		<!--<mesh file="bhand_finger_med_link_fine.stl"/>-->
+		<!--<mesh file="bhand_finger_med_link_convex.stl"/>-->
+		<!--<mesh file="bhand_finger_dist_link_fine.stl"/>-->
+		<!--<mesh file="bhand_finger_dist_link_convex.stl"/>-->
+  </asset>
+
+</mujoco>

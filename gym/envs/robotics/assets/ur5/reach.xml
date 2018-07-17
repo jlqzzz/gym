@@ -1,0 +1,50 @@
+<mujoco>
+
+    <compiler coordinate="local"
+        meshdir="../stls/ur5"
+        inertiafromgeom="false"
+        balanceinertia="true"
+        boundinertia="0.00001"
+        boundmass="0.001"
+        angle="radian"
+        eulerseq ="xyz"/>
+
+    <option   timestep="0.01" iterations='20'
+        gravity="0 0 0" viscosity="0"/>
+
+    <default>
+        <joint damping="1" limited="true"/>
+        <default class="0">
+            <mesh scale = "1 1 1"/>
+        </default>
+        <default class="1">
+            <mesh scale = "0.001 0.001 0.001"/>
+        </default>
+
+    <!-- Barrett -->
+    <!-- default class="wam/bhand">
+            <joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1"  frictionloss=".001"/>
+            <geom type="mesh" contype="0" conaffinity="1" group="0" rgba="0.5 0.6 0.7 1"/>
+        </default>
+        <default class="wam/bhandViz">
+            <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.8 0.8 1"/>
+        </default-->
+    </default>
+
+
+    <include file="shared.xml"></include>
+
+    <worldbody>
+        <body name="floor0" pos="0.8 0.75 0">
+            <site name="target0" pos="0 0 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+        <light directional="true" cutoff="4" exponent="20" diffuse="1 1 1" specular="0 0 0" pos=".5 0.75 1.5" dir="-.5 -0.75 -1.5"/>
+        <geom name="gnd" material="GndMat" type="plane" contype="1" conaffinity="1" pos="0 0 0" size="1.5 0.75 0.001"/>
+
+        <include file="ur5.xml"></include>
+
+    </worldbody>
+
+    <actuator></actuator>
+
+</mujoco>

@@ -17,7 +17,7 @@
 ====================================================== -->
 
 <mujoco model="bhand(v1.22)">
-	<compiler coordinate="local" angle="radian" meshdir="meshes/" />
+    <compiler coordinate="local" angle="radian" meshdir="../stls/bhand" />
 	<include file="include_bhandDependencies.xml"/>
 	
 	<worldbody>

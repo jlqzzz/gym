@@ -8,10 +8,12 @@
 
 ====================================================== -->
 
+<!-- Unfinished -->
+
 <mujoco model="UR5">
 
   <compiler coordinate="local" 
-	    meshdir="meshes/"
+      meshdir="../stls/ur5"
 	    inertiafromgeom="false"	    
 	    balanceinertia="true" 
 	    boundinertia="0.00001" 
@@ -56,19 +58,19 @@
 	<material name="FinMat" specular=".3" shininess=".5" reflectance="0.5" rgba="0.1 0.1 0.1  1"/>
   	
   	<!-- Barrett -->
-<!--  	<mesh file="bhand_palm_fine.stl"/>-->
-		<!--<mesh file="bhand_palm_link_convex_decomposition_p1.stl"/>-->
-		<!--<mesh file="bhand_palm_link_convex_decomposition_p2.stl"/>-->
-		<!--<mesh file="bhand_palm_link_convex_decomposition_p3.stl"/>-->
-		<!--<mesh file="bhand_palm_link_convex_decomposition_p4.stl"/>-->
-		<!--<mesh file="bhand_finger_prox_link_fine.stl"/>-->
-		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p1.stl"/>-->
-		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p2.stl"/>-->
-		<!--<mesh file="bhand_finger_prox_link_convex_decomposition_p3.stl"/>-->
-		<!--<mesh file="bhand_finger_med_link_fine.stl"/>-->
-		<!--<mesh file="bhand_finger_med_link_convex.stl"/>-->
-		<!--<mesh file="bhand_finger_dist_link_fine.stl"/>-->
-		<!--<mesh file="bhand_finger_dist_link_convex.stl"/>-->
+  	<mesh file="bhand_palm_fine.stl"/>
+		<mesh file="bhand_palm_link_convex_decomposition_p1.stl"/>
+		<mesh file="bhand_palm_link_convex_decomposition_p2.stl"/>
+		<mesh file="bhand_palm_link_convex_decomposition_p3.stl"/>
+		<mesh file="bhand_palm_link_convex_decomposition_p4.stl"/>
+		<mesh file="bhand_finger_prox_link_fine.stl"/>
+		<mesh file="bhand_finger_prox_link_convex_decomposition_p1.stl"/>
+		<mesh file="bhand_finger_prox_link_convex_decomposition_p2.stl"/>
+		<mesh file="bhand_finger_prox_link_convex_decomposition_p3.stl"/>
+		<mesh file="bhand_finger_med_link_fine.stl"/>
+		<mesh file="bhand_finger_med_link_convex.stl"/>
+		<mesh file="bhand_finger_dist_link_fine.stl"/>
+		<mesh file="bhand_finger_dist_link_convex.stl"/>
   </asset>
   
   
@@ -143,45 +145,6 @@
 	</body>
 	</body>
 
-	<!-- Target -->
-		<body name="target" pos="0 0 0">
-			<joint axis="1 0 0" name="target_x" type="slide" range="-2 2"/>
-			<joint axis="0 1 0" name="target_y" type="slide" range="-2 2"/>
-			<joint axis="0 0 1" name="target_z" type="slide" range="-2 2"/>
-			<!-- <joint armature="0" axis="1 0 0" damping="0" limited="true" name="target_x" pos="0 0 0" range="-.27 .27" ref=".1" stiffness="0" type="slide"/>
-			<joint armature="0" axis="0 1 0" damping="0" limited="true" name="target_y" pos="0 0 0" range="-.27 .27" ref="-.1" stiffness="0" type="slide"/> -->
-			<geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".03" type="sphere"/>
-		</body>
   </worldbody>
-
-  <actuator>
-	<motor name="shoulder_pan_torque" joint="shoulder_pan_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="shoulder_lift_torque" joint="shoulder_lift_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="elbow_torque" joint="elbow_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="wrist_1_torque" joint="wrist_1_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="wrist_2_torque" joint="wrist_2_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="wrist_3_torque" joint="wrist_3_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-<!-- 	<motor name="left_finger_torque" joint="gripper_base_left_finger_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/>
-	<motor name="right_finger_torque" joint="gripper_base_right_finger_joint" ctrllimited="true" ctrlrange="-1.0 1.0" gear="200.0"/> -->
-
-<!-- 	<position name="shoulder_pan_act" joint="shoulder_pan_joint" kp="10" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="shoulder_lift_act" joint="shoulder_lift_joint" kp="100" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="elbow_act" joint="elbow_joint" kp="100" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="wrist_1_act" joint="wrist_1_joint" kp="100" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="wrist_2_act" joint="wrist_2_joint" kp="10" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="wrist_3_act" joint="wrist_3_joint" kp="10" ctrlrange="-3.14159265 3.14159265" ctrllimited="true"/>
-	<position name="left_finger_act" joint="gripper_base_left_finger_joint" kp="10" ctrlrange="-0.055 -0.0027" ctrllimited="true"/>
-	<position name="right_finger_act" joint="gripper_base_right_finger_joint" kp="10" ctrlrange="0.0027 0.055" ctrllimited="true"/>
-
-	<velocity name="shoulder_pan_velocity" joint="shoulder_pan_joint" kv="10" ctrllimited="true"/>
-	<velocity name="shoulder_lift_velocity" joint="shoulder_lift_joint" kv="10" ctrllimited="true"/>
-	<velocity name="elbow_velocity" joint="elbow_joint" kv="10" ctrllimited="true"/>
-	<velocity name="wrist_1_velocity" joint="wrist_1_joint" kv="10" ctrllimited="true"/>
-	<velocity name="wrist_2_velocity" joint="wrist_2_joint" kv="10" ctrllimited="true"/>
-	<velocity name="wrist_3_velocity" joint="wrist_3_joint" kv="10" ctrllimited="true"/>
-	<velocity name="left_finger_velocity" joint="gripper_base_left_finger_joint" kv="10" ctrllimited="true"/>
-	<velocity name="right_finger_velocity" joint="gripper_base_right_finger_joint" kv="10" ctrllimited="true"/> -->
-
-  </actuator>
 </mujoco>
 

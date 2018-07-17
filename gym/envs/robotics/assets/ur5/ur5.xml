@@ -1,0 +1,73 @@
+<mujoco>
+    <body mocap="true" name="ur5:mocap" pos="1 1 1">
+        <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0" size="0.005 0.005 0.005" type="box"></geom>
+        <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0" size="1 0.005 0.005" type="box"></geom>
+        <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0" size="0.005 1 0.001" type="box"></geom>
+        <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0" size="0.005 0.005 1" type="box"></geom>
+    </body>
+
+    <body name="base_link" euler="0 0 3.14" pos="0 0 0">
+        <inertial pos="0 0 0" euler="0 0 0" mass="4.0"
+          diaginertia="0.00443333156 0.00443333156 0.0072" />
+        <geom name="base_g" material="RobMat"  type="mesh" mesh="base"/>
+
+    <body name="shoulder_link" euler="0 0 0" pos="0 0 0.089159">
+        <inertial pos="0 0 0" euler="0 0 0" mass="3.7"
+              diaginertia="0.010267495893 0.010267495893 0.0072" />
+        <geom name="shoulder_g" material="RobMat"  type="mesh" mesh="shoulder"/>
+        <joint  name="shoulder_pan_joint" type="hinge" axis="0 0 1" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="upper_arm_link" euler="0 1.570796325 0" pos="0 0.13585 0">
+        <inertial euler="0 0 0"  pos="0 0 0.28" mass="8.393"
+              diaginertia="0.22689067591 0.22689067591 0.0151074" />
+        <geom name="upper_arm_g" material="RobMat"  type="mesh" mesh="upper_arm"/>
+        <joint  name="shoulder_lift_joint" type="hinge" axis="0 1 0" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="forearm_link" euler="0 0 0" pos="0 -0.1197 0.425">
+        <inertial euler="0 0 0"  pos="0 0 0.25" mass="2.275"
+              diaginertia="0.049443313556 0.049443313556 0.004095" />
+        <geom name="forearm_g" material="RobMat"  type="mesh" mesh="forearm"/>
+        <joint  name="elbow_joint" type="hinge" axis="0 1 0" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="wrist_1_link" euler="0 1.570796325 0" pos="0 0 0.39225">
+        <inertial euler="0 0 0"  pos="0 0 0" mass="1.219"
+              diaginertia="0.111172755531 0.111172755531 0.21942" />
+        <geom name="wrist1_g" material="RobMat"  type="mesh" mesh="wrist_1"/>
+        <joint  name="wrist_1_joint" type="hinge" axis="0 1 0" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="wrist_2_link" euler="0 0 0" pos="0 0.093 0">
+        <inertial euler="0 0 0"  pos="0 0 0" mass="1.219"
+              diaginertia="0.111172755531 0.111172755531 0.21942" />
+        <geom name="wrist2_g" material="RobMat"  type="mesh" mesh="wrist_2"/>
+        <joint  name="wrist_2_joint" type="hinge" axis="0 0 1" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="wrist_3_link" euler="0 0 0" pos="0 0 0.09465">
+        <inertial euler="0 0 0"  pos="0 0 0" mass="0.1879"
+              diaginertia="0.0171364731454 0.0171364731454 0.033822" />
+        <geom name="wrist3_g" material="RobMat"  type="mesh" mesh="wrist_3"/>
+        <joint  name="wrist_3_joint" type="hinge" axis="0 1 0" limited="true"
+            range="-3.14159265 3.14159265"
+            damping="10.0" frictionloss="0"/>
+
+    <body name="ee_link" euler="-1.570796325 0 0" pos="0 0.0823 0">
+        <geom name="ee_link_g" material="RobMat" rgba="0.1 0.1 0.9 1" type="box" size="0.01 0.01 0.01"/>
+    </body>
+    </body>
+    </body>
+    </body>
+    </body>
+    </body>
+    </body>
+    </body>
+</mujoco>
+
