@@ -10,8 +10,6 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         mujoco_env.MujocoEnv.__init__(self, 'reacher.xml', 2)
 
     def step(self, a):
-        self.dist = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target"))
-        self.pre_dist = 0
         # origin version
         # vec = self.get_body_com("fingertip")-self.get_body_com("target")
         # reward_addon = 0
@@ -22,8 +20,8 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # ob = self._get_obs()
         # done = False
         # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward - reward_addon)
-        
-        # custom 
+
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target"))
@@ -31,16 +29,17 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_addon = 20*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*(np.abs(a[0]*self.sim.data.qvel.flat[0]) + 
-                np.abs(a[1]*self.sim.data.qvel.flat[1])) + 
+                -0.1*(np.abs(a[0]*self.sim.data.qvel.flat[0]) +
+                np.abs(a[1]*self.sim.data.qvel.flat[1])) +
                 -0.01*(np.abs(a[0]) + np.abs(a[1]))
-            ) 
+            )
             reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[1])-3) < 0.01 else 0.0
             reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
             # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
 
             reward_show = - self.dist - np.square(a).sum()
         except:
+            self.dist = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target"))
             reward = 0
             reward_dist = 0
             reward_ctrl = 0
@@ -85,7 +84,7 @@ class VisualReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def step(self, a):
         self.dist = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target"))
         self.pre_dist = 0
-        # custom 
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target"))
@@ -93,10 +92,10 @@ class VisualReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_addon = 20*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*(np.abs(a[0]*self.sim.data.qvel.flat[0]) + 
-                np.abs(a[1]*self.sim.data.qvel.flat[1])) + 
+                -0.1*(np.abs(a[0]*self.sim.data.qvel.flat[0]) +
+                np.abs(a[1]*self.sim.data.qvel.flat[1])) +
                 -0.01*(np.abs(a[0]) + np.abs(a[1]))
-            ) 
+            )
             reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[1])-3) < 0.01 else 0.0
             reward = reward_dist + reward_ctrl + reward_stuck + reward_addon
             # print(reward_dist, reward_ctrl, reward_stuck, reward_addon)
@@ -162,7 +161,7 @@ class ReacherPosEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #     action = np.array([0, 0])
 
         a = np.clip(a, a_min=-ctl_angle_limit, a_max=ctl_angle_limit)
-        
+
         vec = self.get_body_com("fingertip")-self.get_body_com("target")
         vec_to_origin = self.get_body_com("fingertip")
 
@@ -261,26 +260,41 @@ class TwoReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         mujoco_env.MujocoEnv.__init__(self, 'two_reacher.xml', 2)
 
     def step(self, a):
-        vec1 = self.get_body_com("fingertip") - self.get_body_com("target1")
-        reward_dist1 = 1. / np.linalg.norm(vec1) # np.clip(1.0/10*np.linalg.norm(vec1), a_min = 0, a_max=50)#
-        vec2 = self.get_body_com("fingertip") - self.get_body_com("target2")
-        reward_dist2 = 1. / np.linalg.norm(vec2) # np.clip(1.0/10*np.linalg.norm(vec2), a_min = 0, a_max=50)#
-        reward_dist_clip = 30
-        if reward_dist1 > reward_dist_clip:
-            reward_dist1 = reward_dist_clip + np.log(reward_dist1 - reward_dist_clip)
-        if reward_dist2 > reward_dist_clip: 
-            reward_dist2 = reward_dist_clip + np.log(reward_dist2 - reward_dist_clip)
+        try:
+            self.pre_dist1 = self.dist1
+            self.pre_dist2 = self.dist2
+            self.dist1 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target1"))
+            self.dist2 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target1"))
 
-        reward_ctrl = - np.square(a).sum()
+            reward_addon = 20*(self.pre_dist1 - self.dist1 + self.pre_dist2 - self.dist2)
+            reward_dist1 = 1. / self.dist1
+            reward_dist2 = 1. / self.dist2
+            reward_dist_clip = 30
+            if reward_dist1 > reward_dist_clip:
+                reward_dist1 = reward_dist_clip + np.log(reward_dist1 - reward_dist_clip)
+            if reward_dist2 > reward_dist_clip:
+                reward_dist2 = reward_dist_clip + np.log(reward_dist2 - reward_dist_clip)
+
+            reward_ctrl = 0.1*(
+                -0.1*(np.abs(a[0]*self.sim.data.qvel.flat[0]) +
+                np.abs(a[1]*self.sim.data.qvel.flat[1])) +
+                -0.01*(np.abs(a[0]) + np.abs(a[1]))
+            )
+            reward = reward_dist1 + reward_dist2 + reward_ctrl + reward_addon
+        except:
+            self.dist1 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target1"))
+            self.dist2 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target2"))
+            reward_dist1 = reward_dist2 = 0
+            reward_ctrl = 0
+            reward = 0
+
         self.do_simulation(a, self.frame_skip)
         ob = self._get_obs()
-        threshold = 0.03
+        # threshold = 0.03
         # done = np.linalg.norm(vec1) < threshold or np.linalg.norm(vec2) < threshold
         done = False
         penalty_alive = 0
-        reward_done  = 0 # = 30 if done else 0
-        reward = reward_dist1 + reward_dist2 + reward_ctrl + penalty_alive + reward_done
-        reward_show = reward_dist1 + reward_ctrl + penalty_alive + reward_done
+        reward_show = reward_dist1 # + reward_ctrl + penalty_alive + reward_done
         return ob, reward, done, dict(reward_dist1=reward_dist1, reward_dist2=reward_dist2, reward_ctrl=reward_ctrl, show=reward_show)
 
     def viewer_setup(self):
@@ -363,7 +377,7 @@ class ReacherObsDoneEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def step(self, a):
         # collision detect
         is_collision = False
-        if self.unwrapped.data.ncon > 0: 
+        if self.unwrapped.data.ncon > 0:
             geo1 = self.unwrapped.data.obj.contact[0].geom1
             geo2 = self.unwrapped.data.obj.contact[0].geom2
             if geo1 == 10 or geo2 == 10 or geo1 == 11 or geo2 == 11:
@@ -376,7 +390,7 @@ class ReacherObsDoneEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
         vec = self.get_body_com("fingertip")-self.get_body_com("target")
         reward_dist = - np.linalg.norm(vec)
-        
+
         reward_ctrl = - np.square(a).sum()
         reward_collsion = -30. if is_collision else 0
         alive_bonus = 0. if not is_collision else 0.
@@ -409,8 +423,8 @@ class ReacherObsDoneEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         return np.concatenate([
             np.cos(theta),
             np.sin(theta),
-            self.sim.data.qpos.flat[2:], # target and obstacle pos 
-            self.sim.data.qvel.flat[:2], # arm end point speed only 
+            self.sim.data.qpos.flat[2:], # target and obstacle pos
+            self.sim.data.qvel.flat[:2], # arm end point speed only
             self.get_body_com("fingertip") - self.get_body_com("target")
         ])
 
@@ -420,7 +434,7 @@ class ReacherObsDoneEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 class UR5ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     '''
     Notice:
-    1. when start, face UR5, facing dir is [y], right is [x], top is [z] 
+    1. when start, face UR5, facing dir is [y], right is [x], top is [z]
     '''
     def __init__(self):
         utils.EzPickle.__init__(self)
@@ -436,14 +450,14 @@ class UR5ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # reward_ctrl = - np.square(a).sum()
         # reward = reward_dist + reward_ctrl + reward_addon
         # reward_show = reward_dist + reward_ctrl
-        # 
+        #
         # self.do_simulation(a, self.frame_skip)
         # ob = self._get_obs()
         # done = False
         # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
 
 
-        # custom 
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("ee_link")-self.get_body_com("target"))
@@ -453,15 +467,15 @@ class UR5ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
                 -0.1*(
-                    np.abs(a[0]*self.sim.data.qvel.flat[0]) + 
+                    np.abs(a[0]*self.sim.data.qvel.flat[0]) +
                     np.abs(a[1]*self.sim.data.qvel.flat[1]) +
                     np.abs(a[2]*self.sim.data.qvel.flat[2]) +
                     np.abs(a[3]*self.sim.data.qvel.flat[3]) +
                     np.abs(a[4]*self.sim.data.qvel.flat[4]) +
                     np.abs(a[5]*self.sim.data.qvel.flat[5])
-                ) + 
+                ) +
                 -0.01*(np.abs(a[0]) + np.abs(a[1]) + np.abs(a[2]) + np.abs(a[3]) + np.abs(a[4]) + np.abs(a[5]))
-            ) 
+            )
             # -2.8707 2.8314
             if self.sim.data.qpos[2] < 0:
                 reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
@@ -526,7 +540,7 @@ class UR5ReacherAccEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def step(self, a):
         a = np.clip(a, a_max=0.4, a_min=-0.4)
-        # custom 
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("ee_link")-self.get_body_com("target"))
@@ -536,15 +550,15 @@ class UR5ReacherAccEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
                 -0.1*(
-                    np.abs(a[0]*self.speed[0]) + 
+                    np.abs(a[0]*self.speed[0]) +
                     np.abs(a[1]*self.speed[1]) +
                     np.abs(a[2]*self.speed[2]) +
                     np.abs(a[3]*self.speed[3]) +
                     np.abs(a[4]*self.speed[4]) +
                     np.abs(a[5]*self.speed[5])
-                ) + 
+                ) +
                 -0.01*(np.abs(a[0]) + np.abs(a[1]) + np.abs(a[2]) + np.abs(a[3]) + np.abs(a[4]) + np.abs(a[5]))
-            ) 
+            )
             # -2.8707 2.8314
             if self.sim.data.qpos[2] < 0:
                 reward_stuck = -0.1 if np.abs(np.abs(self.sim.data.qpos[2])-2.87) < 0.01 else 0.0
@@ -560,7 +574,7 @@ class UR5ReacherAccEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             pos_ctl = self.sim.data.qpos.flat[:-3] + self.speed*self.dt + 0.5*a*(self.dt**2)
             pos_ctl[pos_ctl > np.pi] -= 2*np.pi
             pos_ctl[pos_ctl < -np.pi] += 2*np.pi
-            self.speed += a * self.dt 
+            self.speed += a * self.dt
         except:
             reward = 0
             reward_dist = 0
@@ -627,14 +641,14 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # reward_ctrl = - np.square(a).sum()
         # reward = reward_dist + reward_ctrl + reward_addon
         # reward_show = reward_dist + reward_ctrl
-        # 
+        #
         # self.do_simulation(a, self.frame_skip)
         # ob = self._get_obs()
         # done = False
         # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
 
 
-        # custom 
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target"))
@@ -643,9 +657,9 @@ class BaxterLeftReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_addon = 50*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*np.abs(a*self.sim.data.qvel.flat[10:17]).sum()+ 
+                -0.1*np.abs(a*self.sim.data.qvel.flat[10:17]).sum()+
                 -0.01*np.abs(a).sum()
-            ) 
+            )
             # -2.8707 2.8314
             reward_stuck = 0
             # if self.sim.data.qpos[2] < 0:
@@ -721,14 +735,14 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # reward_ctrl = - np.square(a).sum()
         # reward = reward_dist + reward_ctrl + reward_addon
         # reward_show = reward_dist + reward_ctrl
-        # 
+        #
         # self.do_simulation(a, self.frame_skip)
         # ob = self._get_obs()
         # done = False
         # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
 
 
-        # custom 
+        # custom
         try:
             self.pre_dist = self.dist
             self.dist = np.linalg.norm(self.get_body_com("right_gripper_base")-self.get_body_com("target"))
@@ -737,9 +751,9 @@ class BaxterRightReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_addon = 1*(self.pre_dist - self.dist)
             reward_dist = - self.dist
             reward_ctrl = 0.1*(
-                -0.1*np.abs(a*self.sim.data.qvel.flat[1:8]).sum()+ 
+                -0.1*np.abs(a*self.sim.data.qvel.flat[1:8]).sum()+
                 -0.01*np.abs(a).sum()
-            ) 
+            )
             # -2.8707 2.8314
             reward_stuck = 0
             # if self.sim.data.qpos[2] < 0:
@@ -807,8 +821,8 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     1. faceing baxter, top is [z], right is [y], baxter->you is [x]
     2. origin is the base of baxter
     3. Baxter arm length \leq 1.2m
-    4. init pose: 
-        (0) stable init pos(others may failed when started) 
+    4. init pose:
+        (0) stable init pos(others may failed when started)
         qpos[:-6] = np.array([
              0, # head
              6.4, 0, 0, 1.5, 0, 0, 0,
@@ -851,14 +865,14 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # reward_ctrl = - np.square(a).sum()
         # reward = reward_dist + reward_ctrl + reward_addon
         # reward_show = reward_dist + reward_ctrl
-        # 
+        #
         # self.do_simulation(a, self.frame_skip)
         # ob = self._get_obs()
         # done = False
         # return ob, reward, done, dict(reward_dist=reward_dist, reward_ctrl=reward_ctrl, show=reward_show)
 
 
-        # custom 
+        # custom
         try:
             self.pre_dist_r = self.dist_r
             self.pre_dist_l = self.dist_l
@@ -866,14 +880,14 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.dist_l = np.linalg.norm(self.get_body_com("left_gripper_base")-self.get_body_com("target_left"))
 
             # reward_addon = 20*(self.pre_dist - self.dist)
-            reward_addon = 50*(self.pre_dist_r + self.pre_dist_l 
+            reward_addon = 50*(self.pre_dist_r + self.pre_dist_l
                 - self.dist_r - self.dist_l)
             reward_dist = - self.dist_r - self.dist_l
             reward_ctrl = 0.1*(
                 -0.1*np.abs(a*np.concatenate([
                     self.sim.data.qvel.flat[1:8],
                     self.sim.data.qvel.flat[10:17],
-                    ])).sum()+ 
+                    ])).sum()+
                 -0.01*np.abs(a).sum()
             )
             # -2.8707 2.8314
@@ -946,4 +960,4 @@ class BaxterReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             # self.get_body_com("left_gripper_base") - self.get_body_com("target_left")
         ])
 
-        
+
