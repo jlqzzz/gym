@@ -302,7 +302,7 @@ register(
 register(
     id='TwoReacher-v1',
     entry_point='gym.envs.mujoco:TwoReacherEnv',
-    max_episode_steps=50,
+    max_episode_steps=150,
     reward_threshold=-3.75,
 )
 
