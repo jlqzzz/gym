@@ -264,7 +264,9 @@ class TwoReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.pre_dist1 = self.dist1
             self.pre_dist2 = self.dist2
             self.dist1 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target1"))
-            self.dist2 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target1"))
+            self.dist2 = np.linalg.norm(self.get_body_com("fingertip")-self.get_body_com("target2"))
+            center = (self.get_body_com("target1") + self.get_body_com("target2"))
+            reward_show = np.linalg.norm(self.get_body_com("fingertip") - center)
 
             reward_addon = 50*(self.pre_dist1 - self.dist1 + self.pre_dist2 - self.dist2)
             reward_dist1 = 1. / 100*self.dist1
@@ -288,6 +290,7 @@ class TwoReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_ctrl = 0
             reward_addon = 0
             reward = 0
+            reward_show = 0
 
         self.do_simulation(a, self.frame_skip)
         ob = self._get_obs()
@@ -295,7 +298,7 @@ class TwoReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # done = np.linalg.norm(vec1) < threshold or np.linalg.norm(vec2) < threshold
         done = False
         penalty_alive = 0
-        reward_show = reward_addon # reward_dist1 # + reward_ctrl + penalty_alive + reward_done
+        # reward_show = reward_addon # reward_dist1 # + reward_ctrl + penalty_alive + reward_done
         return ob, reward, done, dict(reward_dist1=reward_dist1, reward_dist2=reward_dist2, reward_ctrl=reward_ctrl, show=reward_show)
 
     def viewer_setup(self):
