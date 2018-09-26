@@ -403,6 +403,12 @@ register(
 )
 
 register(
+    id='VisualHumanoid-v2',
+    entry_point='gym.envs.mujoco:VisualHumanoidEnv',
+    max_episode_steps=1000,
+)
+
+register(
     id='HumanoidStandup-v2',
     entry_point='gym.envs.mujoco:HumanoidStandupEnv',
     max_episode_steps=1000,
