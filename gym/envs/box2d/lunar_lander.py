@@ -6,7 +6,7 @@ from Box2D.b2 import (edgeShape, circleShape, fixtureDef, polygonShape, revolute
 
 import gym
 from gym import spaces
-from gym.utils import seeding
+from gym.utils import seeding, EzPickle
 
 # Rocket trajectory optimization is a classic topic in Optimal Control.
 #
@@ -28,7 +28,7 @@ from gym.utils import seeding
 #
 # To play yourself, run:
 #
-# python examples/agents/keyboard_agent.py LunarLander-v0
+# python examples/agents/keyboard_agent.py LunarLander-v2
 #
 # Created by Oleg Klimov. Licensed on the same terms as the rest of OpenAI Gym.
 
@@ -70,7 +70,7 @@ class ContactDetector(contactListener):
             if self.env.legs[i] in [contact.fixtureA.body, contact.fixtureB.body]:
                 self.env.legs[i].ground_contact = False
 
-class LunarLander(gym.Env):
+class LunarLander(gym.Env, EzPickle):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second' : FPS
@@ -79,6 +79,7 @@ class LunarLander(gym.Env):
     continuous = False
 
     def __init__(self):
+        EzPickle.__init__(self)
         self.seed()
         self.viewer = None
 
@@ -390,3 +391,30 @@ def heuristic(env, s):
         elif angle_todo < -0.05: a = 3
         elif angle_todo > +0.05: a = 1
     return a
+
+def demo_heuristic_lander(env, seed=None, render=False):
+    env.seed(seed)
+    total_reward = 0
+    steps = 0
+    s = env.reset()
+    while True:
+        a = heuristic(env, s)
+        s, r, done, info = env.step(a)
+        total_reward += r
+
+        if render:
+            still_open = env.render()
+            if still_open == False: break
+
+        if steps % 20 == 0 or done:
+            print("observations:", " ".join(["{:+0.2f}".format(x) for x in s]))
+            print("step {} total_reward {:+0.2f}".format(steps, total_reward))
+        steps += 1
+        if done: break
+    return total_reward
+
+
+if __name__ == '__main__':
+    demo_heuristic_lander(LunarLander(), render=True)
+    
+    

@@ -20,8 +20,6 @@ class Tuple(gym.Space):
         return isinstance(x, tuple) and len(x) == len(self.spaces) and all(
             space.contains(part) for (space,part) in zip(self.spaces,x))
 
-    __contains__ = contains
-
     def __repr__(self):
         return "Tuple(" + ", ". join([str(s) for s in self.spaces]) + ")"
 
@@ -32,3 +30,6 @@ class Tuple(gym.Space):
 
     def from_jsonable(self, sample_n):
         return [sample for sample in zip(*[space.from_jsonable(sample_n[i]) for i, space in enumerate(self.spaces)])]
+
+    def __eq__(self, other):
+        return self.spaces == other.spaces

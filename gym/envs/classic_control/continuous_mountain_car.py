@@ -139,7 +139,10 @@ class Continuous_MountainCarEnv(gym.Env):
         return self.viewer.render(return_rgb_array = mode=='rgb_array')
 
     def close(self):
-        if self.viewer: self.viewer.close()
+        if self.viewer:
+            self.viewer.close()
+            self.viewer = None
+
 
 
 class Continuous_TwoMountainCarEnv(gym.Env):
@@ -285,4 +288,3 @@ class Continuous_TwoMountainCarEnv(gym.Env):
         self.cartrans.set_rotation(math.cos(3 * pos))
 
         return self.viewer.render(return_rgb_array = mode=='rgb_array')
-
