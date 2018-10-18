@@ -409,6 +409,12 @@ register(
 )
 
 register(
+    id='HumanoidCMUSimple-v2',
+    entry_point='gym.envs.mujoco:HumanoidCMUSimpleEnv',
+    max_episode_steps=1000,
+)
+
+register(
     id='VisualHumanoid-v2',
     entry_point='gym.envs.mujoco:VisualHumanoidEnv',
     max_episode_steps=1000,
