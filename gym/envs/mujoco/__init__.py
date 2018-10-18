@@ -6,7 +6,7 @@ from gym.envs.mujoco.ant_distance import AntDistEnv
 from gym.envs.mujoco.half_cheetah import HalfCheetahEnv, TwoHalfCheetahEnv
 from gym.envs.mujoco.hopper import HopperEnv
 from gym.envs.mujoco.walker2d import Walker2dEnv
-from gym.envs.mujoco.humanoid import HumanoidEnv, VisualHumanoidEnv
+from gym.envs.mujoco.humanoid import HumanoidEnv, VisualHumanoidEnv, HumanoidCMUEnv
 from gym.envs.mujoco.inverted_pendulum import InvertedPendulumEnv
 from gym.envs.mujoco.inverted_double_pendulum import InvertedDoublePendulumEnv
 from gym.envs.mujoco.reacher import ReacherEnv, VisualReacherEnv, BaxterReacherEnv, BaxterRightReacherEnv, BaxterLeftReacherEnv, UR5ReacherEnv, UR5ReacherAccEnv, ReacherPosEnv, ReacherDoneEnv, TwoReacherEnv, ReacherObsDoneEnv, ReacherSpeedEnv
