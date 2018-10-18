@@ -15,7 +15,6 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         data = self.sim.data
-        self.img_ob = self.sim.render(width=128, height=128, depth=False, device_id=-1)
         return np.concatenate([data.qpos.flat[2:],
                                data.qvel.flat,
                                data.cinert.flat,
@@ -102,7 +101,6 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         data = self.sim.data
-        self.img_ob = self.sim.render(width=128, height=128, depth=False, device_id=-1)
         return np.concatenate([data.qpos.flat[2:],
                                data.qvel.flat,
                                data.cinert.flat,
@@ -122,7 +120,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        done = bool((qpos[2] < 1.0) or (qpos[2] > 2.0))
+        done = bool((qpos[2] < 0.3) or (qpos[2] > 3.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
