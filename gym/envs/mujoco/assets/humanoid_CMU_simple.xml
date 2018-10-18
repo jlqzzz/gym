@@ -275,7 +275,6 @@
     <motor name="upperneckrz" joint="upperneckrz" gear="20"/>
   </actuator>
 
-<!--
   <sensor>
     <subtreelinvel name="thorax_subtreelinvel" body="thorax"/>
     <velocimeter name="sensor_root_veloc" site="root"/>
@@ -286,6 +285,5 @@
     <touch name="sensor_touch_rfoot" site="rfoot_touch"/>
     <touch name="sensor_touch_lfoot" site="lfoot_touch"/>
   </sensor>
--->
 
 </mujoco>

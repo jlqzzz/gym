@@ -101,12 +101,31 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         data = self.sim.data
-        return np.concatenate([data.qpos.flat[2:],
-                               data.qvel.flat,
-                               data.cinert.flat,
-                               data.cvel.flat,
-                               data.qfrc_actuator.flat,
-                               data.cfrc_ext.flat])
+        # return np.concatenate([data.qpos[7:],
+        #                        data.body_xpos[17, [2]],
+        #                        data.cinert.flat,
+        #                        data.cvel.flat,
+        #                        data.qfrc_actuator.flat,
+        #                        data.cfrc_ext.flat])
+
+        joint_angles = data.qpos[7:]
+        head_height = data.body_xpos[17, [2]]
+        torso_frame = data.body_xmat[14, :].reshape(3, 3)
+        torso_pos = data.body_xpos[14, :]
+        positions = []
+        for ind in [22, 5, 29, 10]:
+            torso_to_limb = data.body_xpos[ind] - torso_pos
+            positions.append(torso_to_limb.dot(torso_frame))
+        extremities = np.hstack(positions)
+        torso_vertical_orientation = data.body_xmat[14, [6,7,8]]
+        center_of_mass_velocity = data.subtree_linvel[14, :]
+        velocity = data.qvel
+        return np.concatenate([joint_angles,
+                               head_height,
+                               extremities,
+                               torso_vertical_orientation,
+                               center_of_mass_velocity,
+                               velocity])
 
     def step(self, a):
         pos_before = mass_center(self.model, self.sim)
@@ -120,7 +139,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        done = bool((qpos[2] < 0.7) or (qpos[2] > 2.0))
+        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
@@ -149,12 +168,31 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         data = self.sim.data
-        return np.concatenate([data.qpos.flat[2:],
-                               data.qvel.flat,
-                               data.cinert.flat,
-                               data.cvel.flat,
-                               data.qfrc_actuator.flat,
-                               data.cfrc_ext.flat])
+        # return np.concatenate([data.qpos[7:],
+        #                        data.body_xpos[17, [2]],
+        #                        data.cinert.flat,
+        #                        data.cvel.flat,
+        #                        data.qfrc_actuator.flat,
+        #                        data.cfrc_ext.flat])
+
+        joint_angles = data.qpos[7:]
+        head_height = data.body_xpos[17, [2]]
+        torso_frame = data.body_xmat[14, :].reshape(3, 3)
+        torso_pos = data.body_xpos[14, :]
+        positions = []
+        for ind in [22, 5, 29, 10]:
+            torso_to_limb = data.body_xpos[ind] - torso_pos
+            positions.append(torso_to_limb.dot(torso_frame))
+        extremities = np.hstack(positions)
+        torso_vertical_orientation = data.body_xmat[14, [6,7,8]]
+        center_of_mass_velocity = data.subtree_linvel[14, :]
+        velocity = data.qvel
+        return np.concatenate([joint_angles,
+                               head_height,
+                               extremities,
+                               torso_vertical_orientation,
+                               center_of_mass_velocity,
+                               velocity])
 
     def step(self, a):
         pos_before = mass_center(self.model, self.sim)
@@ -168,7 +206,7 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        done = bool((qpos[2] < 0.7) or (qpos[2] > 2.0))
+        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
