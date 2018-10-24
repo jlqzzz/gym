@@ -139,7 +139,8 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
+        head_height = self.sim.data.body_xpos[17, 2]
+        done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
@@ -206,7 +207,8 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
+        head_height = self.sim.data.body_xpos[17, 2]
+        done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
