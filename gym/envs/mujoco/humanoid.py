@@ -133,7 +133,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
-        lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
+        lin_vel_cost = -0.25 * (pos_after - pos_before)[1] / self.model.opt.timestep
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
@@ -201,7 +201,7 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
-        lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
+        lin_vel_cost = -0.25 * (pos_after - pos_before)[1] / self.model.opt.timestep
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
