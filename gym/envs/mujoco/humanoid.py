@@ -5,7 +5,7 @@ from gym import utils
 def mass_center(model, sim):
     mass = np.expand_dims(model.body_mass, 1)
     xpos = sim.data.xipos
-    return (np.sum(mass * xpos, 0) / np.sum(mass))[0]
+    return (np.sum(mass * xpos, 0) / np.sum(mass))
 
 class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
@@ -23,9 +23,9 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                data.cfrc_ext.flat])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)
+        pos_before = mass_center(self.model, self.sim)[0]
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)
+        pos_after = mass_center(self.model, self.sim)[0]
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
@@ -64,9 +64,9 @@ class VisualHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         return img
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)
+        pos_before = mass_center(self.model, self.sim)[0]
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)
+        pos_after = mass_center(self.model, self.sim)[0]
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
@@ -128,9 +128,9 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                velocity])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)
+        pos_before = mass_center(self.model, self.sim)[1]
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)
+        pos_after = mass_center(self.model, self.sim)[1]
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
@@ -217,9 +217,9 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                velocity])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)
+        pos_before = mass_center(self.model, self.sim)[1]
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)
+        pos_after = mass_center(self.model, self.sim)[1]
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
