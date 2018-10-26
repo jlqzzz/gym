@@ -61,7 +61,7 @@ class MujocoEnv(gym.Env):
     # methods to override:
     # ----------------------------
 
-    def reset_model(self):
+    def reset_model(self, reset_type=None):
         """
         Reset the robot degrees of freedom (qpos and qvel).
         Implement this in each subclass.
@@ -78,9 +78,9 @@ class MujocoEnv(gym.Env):
 
     # -----------------------------
 
-    def reset(self):
+    def reset(self, reset_type=None):
         self.sim.reset()
-        ob = self.reset_model()
+        ob = self.reset_model(reset_type)
         return ob
 
     def set_state(self, qpos, qvel): 

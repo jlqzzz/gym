@@ -5,7 +5,7 @@ from gym import utils
 def mass_center(model, sim):
     mass = np.expand_dims(model.body_mass, 1)
     xpos = sim.data.xipos
-    return np.sum(mass * xpos, 0) / np.sum(mass)
+    return (np.sum(mass * xpos, 0) / np.sum(mass))[0]
 
 class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
@@ -23,9 +23,9 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                data.cfrc_ext.flat])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)[0]
+        pos_before = mass_center(self.model, self.sim)
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)[0]
+        pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
@@ -40,7 +40,7 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
                reward_impact=-quad_impact_cost, img_ob=self.img_ob)
 
-    def reset_model(self):
+    def reset_model(self, reset_type=None):
         c = 0.01
         self.set_state(
             self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
@@ -64,9 +64,9 @@ class VisualHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         return img
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)[0]
+        pos_before = mass_center(self.model, self.sim)
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)[0]
+        pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
         lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
@@ -78,7 +78,7 @@ class VisualHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         done = bool((qpos[2] < 1.0) or (qpos[2] > 2.0))
         return self._get_obs(), reward, done, dict(reward_linvel=lin_vel_cost, reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus, reward_impact=-quad_impact_cost)
 
-    def reset_model(self):
+    def reset_model(self, reset_type=None):
         c = 0.01
         self.set_state(
             self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
@@ -128,30 +128,51 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                velocity])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)[1]
+        pos_before = mass_center(self.model, self.sim)
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)[1]
+        pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
-        lin_vel_cost = -0.25 * (pos_after - pos_before) / self.model.opt.timestep
+        lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        head_height = self.sim.data.body_xpos[17, 2]
-        done = bool((head_height < 1.0) or (head_height > 2.0))
+        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost, img_ob=self.img_ob)
+               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=quad_ctrl_cost+quad_impact_cost)
 
-    def reset_model(self):
-        c = 0.01
-        self.set_state(
-            self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
-            self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
-        )
+    def reset_model(self, reset_type=None):
+        if reset_type is not None:
+            if reset_type == 'leftfoot_front':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," leftfoot_front_state.npy"))
+            elif reset_type == 'rightfoot_front':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," rightfoot_front_state.npy"))
+            elif reset_type == 'static':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," static_state.npy"))
+            else:
+                assert(True, 'Wrong reset type')
+            
+            init_qpos = init_state[:63]
+            init_qvel = init_state[63:]
+            
+            self.set_state(init_qpos, init_qvel)      
+        else:
+            c = 0.01
+            self.set_state(
+                self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+            )
+            
+        '''
+        print('===reset_model===')
+        print('self.init_qpos: ', self.init_qpos)
+        print('self.init_qvel ',  self.init_qvel)
+        '''
+
         return self._get_obs()
 
     def viewer_setup(self):
@@ -196,30 +217,44 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                velocity])
 
     def step(self, a):
-        pos_before = mass_center(self.model, self.sim)[1]
+        pos_before = mass_center(self.model, self.sim)
         self.do_simulation(a, self.frame_skip)
-        pos_after = mass_center(self.model, self.sim)[1]
+        pos_after = mass_center(self.model, self.sim)
         alive_bonus = 5.0
         data = self.sim.data
-        lin_vel_cost = -0.25 * (pos_after - pos_before) / self.model.opt.timestep
+        lin_vel_cost = 0.25 * (pos_after - pos_before) / self.model.opt.timestep
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        head_height = self.sim.data.body_xpos[17, 2]
-        done = bool((head_height < 1.0) or (head_height > 2.0))
+        done = bool((qpos[2] < 0.67) or (qpos[2] > 1.33))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
                reward_impact=-quad_impact_cost, img_ob=self.img_ob)
 
-    def reset_model(self):
-        c = 0.01
-        self.set_state(
-            self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
-            self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
-        )
+    def reset_model(self, reset_type=None):
+        if reset_type is not None:
+            if reset_type == 'leftfoot_front':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," leftfoot_front_state.npy"))
+            elif reset_type == 'rightfoot_front':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," rightfoot_front_state.npy"))
+            elif reset_type == 'static':
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," static_state.npy"))
+            else:
+                assert(True, 'Wrong reset type')
+            
+            init_qpos = init_state[:63]
+            init_qvel = init_state[63:]
+            
+            self.set_state(init_qpos, init_qvel)      
+        else:
+            c = 0.01
+            self.set_state(
+                self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+            )
         return self._get_obs()
 
     def viewer_setup(self):
