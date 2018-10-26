@@ -61,7 +61,7 @@ class Env(object):
         """
         raise NotImplementedError
 
-    def reset(self):
+    def reset(self, reset_type=None):
         """Resets the state of the environment and returns an initial observation.
 
         Returns: observation (object): the initial observation of the

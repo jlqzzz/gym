@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from gym.envs.mujoco import mujoco_env
 from gym import utils
@@ -149,11 +151,11 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def reset_model(self, reset_type=None):
         if reset_type is not None:
             if reset_type == 'leftfoot_front':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," leftfoot_front_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","leftfoot_front_state.npy"))
             elif reset_type == 'rightfoot_front':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," rightfoot_front_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","rightfoot_front_state.npy"))
             elif reset_type == 'static':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," static_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
             else:
                 assert(True, 'Wrong reset type')
             
@@ -243,11 +245,11 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def reset_model(self, reset_type=None):
         if reset_type is not None:
             if reset_type == 'leftfoot_front':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," leftfoot_front_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","leftfoot_front_state.npy"))
             elif reset_type == 'rightfoot_front':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," rightfoot_front_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","rightfoot_front_state.npy"))
             elif reset_type == 'static':
-                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets"," static_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
             else:
                 assert(True, 'Wrong reset type')
             
