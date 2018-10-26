@@ -159,7 +159,11 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             init_qpos = init_state[:63]
             init_qvel = init_state[63:]
             
-            self.set_state(init_qpos, init_qvel)      
+            c = 0.01
+            self.set_state(
+                init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+            )
         else:
             c = 0.01
             self.set_state(
@@ -248,7 +252,11 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             init_qpos = init_state[:63]
             init_qvel = init_state[63:]
             
-            self.set_state(init_qpos, init_qvel)      
+            c = 0.01
+            self.set_state(
+                init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+            )
         else:
             c = 0.01
             self.set_state(
