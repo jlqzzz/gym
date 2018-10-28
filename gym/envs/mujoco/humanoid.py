@@ -220,7 +220,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         torso_frame = data.body_xmat[14, :].reshape(3, 3)
         torso_pos = data.body_xpos[14, :]
         positions = []
-        for ind in [22, 5, 29, 10]:
+        for ind in [22, 5, 29, 10, 17]:  # L/R hand/foot, head
             torso_to_limb = data.body_xpos[ind] - torso_pos
             positions.append(torso_to_limb.dot(torso_frame))
         extremities = np.hstack(positions)
@@ -244,14 +244,17 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
+        # standing
+        head_height = self.sim.data.body_xpos[17, 2]
+        head_upright = self.sim.data.body_xmat[17, 7]
+        stand_reward = 0.5*(head_height + head_upright)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        head_height = self.sim.data.body_xpos[17, 2]
         done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=quad_ctrl_cost+quad_impact_cost)
+               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=head_upright)
 
     def reset_model(self, reset_type=None):
         if reset_type is not None:
@@ -314,7 +317,7 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         torso_frame = data.body_xmat[14, :].reshape(3, 3)
         torso_pos = data.body_xpos[14, :]
         positions = []
-        for ind in [22, 5, 29, 10]:
+        for ind in [22, 5, 29, 10, 17]:  # L/R hand/foot, head
             torso_to_limb = data.body_xpos[ind] - torso_pos
             positions.append(torso_to_limb.dot(torso_frame))
         extremities = np.hstack(positions)
@@ -338,14 +341,17 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         quad_ctrl_cost = 0.1 * np.square(data.ctrl).sum()
         quad_impact_cost = .5e-6 * np.square(data.cfrc_ext).sum()
         quad_impact_cost = min(quad_impact_cost, 10)
+        # standing
+        head_height = self.sim.data.body_xpos[17, 2]
+        head_upright = self.sim.data.body_xmat[17, 7]
+        stand_reward = 0.5*(head_height + head_upright)
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
         qpos = self.sim.data.qpos
-        head_height = self.sim.data.body_xpos[17, 2]
         done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost, img_ob=self.img_ob)
+               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=head_upright)
 
     def reset_model(self, reset_type=None):
         if reset_type is not None:
