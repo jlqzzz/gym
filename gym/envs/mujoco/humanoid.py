@@ -248,7 +248,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         head_height = self.sim.data.body_xpos[17, 2]
         head_upright = self.sim.data.body_xmat[17, 7]
         stand_reward = -0.5*np.abs(head_height-1.5) + head_upright
-        reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
+        reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus + stand_reward
         qpos = self.sim.data.qpos
         done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
@@ -345,7 +345,7 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         head_height = self.sim.data.body_xpos[17, 2]
         head_upright = self.sim.data.body_xmat[17, 7]
         stand_reward = -0.5*np.abs(head_height-1.5) + head_upright
-        reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus
+        reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus + stand_reward
         qpos = self.sim.data.qpos
         done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
