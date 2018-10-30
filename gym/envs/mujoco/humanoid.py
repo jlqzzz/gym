@@ -247,14 +247,15 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         # standing
         head_height = self.sim.data.body_xpos[17, 2]
         head_upright = self.sim.data.body_xmat[17, 7]
-        stand_reward = -0.5*np.abs(head_height-1.5) + head_upright
+        head_front = -self.sim.data.body_xmat[17, 5]
+        stand_reward = -0.25*np.abs(head_height-1.5) + 0.25*head_upright + 0.25*head_front
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus + stand_reward
         qpos = self.sim.data.qpos
         done = bool((head_height < 1.0) or (head_height > 2.0))
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=head_upright)
+               reward_impact=-quad_impact_cost, img_ob=self.img_ob, show=head_upright+head_front)
 
     def reset_model(self, reset_type=None):
         if reset_type is not None:

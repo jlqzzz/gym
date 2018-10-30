@@ -80,7 +80,10 @@ class MujocoEnv(gym.Env):
 
     def reset(self, reset_type=None):
         self.sim.reset()
-        ob = self.reset_model(reset_type)
+        try:
+            ob = self.reset_model(reset_type)
+        except:
+            ob = self.reset_model()
         return ob
 
     def set_state(self, qpos, qvel): 
