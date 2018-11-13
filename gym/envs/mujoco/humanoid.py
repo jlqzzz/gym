@@ -220,7 +220,8 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         torso_frame = data.body_xmat[14, :].reshape(3, 3)
         torso_pos = data.body_xpos[14, :]
         positions = []
-        for ind in [22, 5, 29, 10, 17]:  # L/R hand/foot, head
+        # for ind in [22, 5, 29, 10, 17]:  # L/R hand/foot, head
+        for ind in [22, 5, 29, 10]:  # L/R hand/foot, head
             torso_to_limb = data.body_xpos[ind] - torso_pos
             positions.append(torso_to_limb.dot(torso_frame))
         extremities = np.hstack(positions)
@@ -248,7 +249,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         head_height = self.sim.data.body_xpos[17, 2]
         head_upright = self.sim.data.body_xmat[17, 7]
         head_front = -self.sim.data.body_xmat[17, 5]
-        stand_reward = -0.25*np.abs(head_height-1.5) + 0.25*head_upright + 0.25*head_front
+        stand_reward = 0 # -0.1*np.abs(head_height-1.5) + 0.1*head_upright + 0.25*head_front
         reward = lin_vel_cost - quad_ctrl_cost - quad_impact_cost + alive_bonus + stand_reward
         qpos = self.sim.data.qpos
         done = bool((head_height < 1.0) or (head_height > 2.0))
@@ -264,7 +265,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             elif reset_type == 'rightfoot_front':
                 init_state = rightfoot_pose # np.load(os.path.join(os.path.dirname(__file__), "assets","rightfoot_front_state.npy"))
             elif reset_type == 'static':
-                init_state = static_pose # np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
+                init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
             else:
                 assert(True, 'Wrong reset type')
 
@@ -273,8 +274,8 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
             c = 0.01
             self.set_state(
-                init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
-                init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+                init_qpos, # + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                init_qvel # + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
             )
         else:
             c = 0.01
