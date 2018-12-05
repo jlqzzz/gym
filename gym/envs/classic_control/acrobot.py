@@ -95,7 +95,7 @@ class AcrobotEnv(core.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def reset(self):
+    def reset(self, *args, **kwargs):
         self.state = self.np_random.uniform(low=-0.1, high=0.1, size=(4,))
         return self._get_ob()
 
