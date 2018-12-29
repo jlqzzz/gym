@@ -145,7 +145,7 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         state = self._get_obs()
         return state, reward, done, dict(reward_linvel=lin_vel_cost,
                reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost, img_ob=self.img_ob)
+               reward_impact=-quad_impact_cost)
 
     def reset_model(self, reset_type=None):
         c = 0.01
@@ -267,7 +267,7 @@ class HumanoidCMUEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             elif reset_type == 'static':
                 init_state = np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
             else:
-                assert(True, 'Wrong reset type')
+                assert('Wrong reset type')
 
             init_qpos = init_state[:63]
             init_qvel = init_state[63:]
@@ -364,7 +364,7 @@ class HumanoidCMUSimpleEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             elif reset_type == 'static':
                 init_state = static_pose # np.load(os.path.join(os.path.dirname(__file__), "assets","static_state.npy"))
             else:
-                assert(True, 'Wrong reset type')
+                assert('Wrong reset type')
 
             init_qpos = init_state[:63]
             init_qvel = init_state[63:]
