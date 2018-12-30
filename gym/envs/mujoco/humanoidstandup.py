@@ -30,12 +30,15 @@ class HumanoidStandupEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         done = bool(False)
         return self._get_obs(), reward, done, dict(reward_linup=uph_cost, reward_quadctrl=-quad_ctrl_cost, reward_impact=-quad_impact_cost)
 
-    def reset_model(self):
-        c = 0.01
-        self.set_state(
-            self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
-            self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
-        )
+    def reset_model(self, init_state=None):
+        if init_state:
+            self.set_state(init_state[0], init_state[1])
+        else:
+            c = 0.01
+            self.set_state(
+                self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
+                self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
+            )
         return self._get_obs()
 
     def viewer_setup(self):

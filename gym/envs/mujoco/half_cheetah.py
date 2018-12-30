@@ -24,10 +24,13 @@ class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.sim.data.qvel.flat,
         ])
 
-    def reset_model(self):
-        qpos = self.init_qpos + self.np_random.uniform(low=-.1, high=.1, size=self.model.nq)
-        qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
-        self.set_state(qpos, qvel)
+    def reset_model(self, init_state=None):
+        if init_state:
+            self.set_state(init_state[0], init_state[1])
+        else:
+            qpos = self.init_qpos + self.np_random.uniform(low=-.1, high=.1, size=self.model.nq)
+            qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
+            self.set_state(qpos, qvel)
         return self._get_obs()
 
     def viewer_setup(self):
