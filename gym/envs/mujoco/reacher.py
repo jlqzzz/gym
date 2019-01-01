@@ -53,7 +53,7 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def viewer_setup(self):
         self.viewer.cam.trackbodyid = 0
 
-    def reset_model(self):
+    def reset_model(self, init_state=None):
         qpos = self.np_random.uniform(low=-0.1, high=0.1, size=self.model.nq) + self.init_qpos
         while True:
             self.goal = self.np_random.uniform(low=-.2, high=.2, size=2)
