@@ -143,9 +143,12 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         qpos = self.sim.data.qpos
         done = bool((qpos[2] < 1.0) or (qpos[2] > 2.0))
         state = self._get_obs()
-        return state, reward, done, dict(reward_linvel=lin_vel_cost,
-               reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
-               reward_impact=-quad_impact_cost)
+        # return state, reward, done, dict(reward_linvel=lin_vel_cost,
+        #        reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
+        #        reward_impact=-quad_impact_cost)
+
+        sparse_reward = 1 if (pos_after - pos_before) > 0 else 0
+        return state, sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
         if init_state:

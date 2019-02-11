@@ -13,7 +13,8 @@ class InvertedPendulumEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         ob = self._get_obs()
         notdone = np.isfinite(ob).all() and (np.abs(ob[1]) <= .2)
         done = not notdone
-        return ob, reward, done, {}
+        sparse_reward = 1 if self.get_body_com('pole')[-1] > 0.29 else 0
+        return ob, sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
         if init_state:

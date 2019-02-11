@@ -18,7 +18,8 @@ class InvertedDoublePendulumEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         alive_bonus = 10
         r = alive_bonus - dist_penalty - vel_penalty
         done = bool(y <= 1)
-        return ob, r, done, {}
+        sparse_reward = 1 if self.get_body_com('pole2')[-1] > 0.89 else 0
+        return ob, sparse_reward, done, dict(show=r)
 
     def _get_obs(self):
         return np.concatenate([

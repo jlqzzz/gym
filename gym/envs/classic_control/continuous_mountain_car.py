@@ -67,12 +67,14 @@ class Continuous_MountainCarEnv(gym.Env):
         done = bool(position >= self.goal_position)
 
         reward = 0
+        sparse_reward = 0
         if done:
             reward = 100.0
+            sparse_reward = 1
         reward -= math.pow(action[0],2)*0.1
 
         self.state = np.array([position, velocity])
-        return self.state, reward, done, {}
+        return self.state, sparse_reward, done, dict(show=reward)
 
     def reset(self, *args, **kwargs):
         self.state = np.array([self.np_random.uniform(low=-0.6, high=-0.4), 0])

@@ -19,7 +19,9 @@ class HopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         done = not (np.isfinite(s).all() and (np.abs(s[2:]) < 100).all() and
                     (height > .7) and (abs(ang) < .2))
         ob = self._get_obs()
-        return ob, reward, done, {}
+        sparse_reward = 1 if (posafter - posbefore) > 0 else 0
+        return ob, sparse_reward, done, dict(show=reward)
+        # return ob, reward, done, {}
 
     def _get_obs(self):
         return np.concatenate([

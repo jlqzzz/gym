@@ -16,7 +16,9 @@ class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward_run = (xposafter - xposbefore)/self.dt
         reward = reward_ctrl + reward_run
         done = False
-        return ob, reward, done, dict(reward_run=reward_run, reward_ctrl=reward_ctrl, show=0)
+        # return ob, reward, done, dict(reward_run=reward_run, reward_ctrl=reward_ctrl, show=0)
+        sparse_reward = 1 if (xposafter - xposbefore) > 0 else 0
+        return ob, sparse_reward, done, dict(show=reward)
 
     def _get_obs(self):
         return np.concatenate([

@@ -28,7 +28,9 @@ class HumanoidStandupEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward = uph_cost - quad_ctrl_cost - quad_impact_cost + 1
 
         done = bool(False)
-        return self._get_obs(), reward, done, dict(reward_linup=uph_cost, reward_quadctrl=-quad_ctrl_cost, reward_impact=-quad_impact_cost)
+        # return self._get_obs(), reward, done, dict(reward_linup=uph_cost, reward_quadctrl=-quad_ctrl_cost, reward_impact=-quad_impact_cost)
+        sparse_reward = 1 if self.get_body_com('torso')[-1] > 1.1 else 0
+        return self._get_obs(), sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
         if init_state:
