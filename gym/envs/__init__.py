@@ -90,6 +90,13 @@ register(
 )
 
 register(
+    id='SparseMountainCarContinuous-v0',
+    entry_point='gym.envs.classic_control:SparseContinuous_MountainCarEnv',
+    max_episode_steps=999,
+    reward_threshold=90.0,
+)
+
+register(
     id='TwoMountainCarContinuous-v0',
     entry_point='gym.envs.classic_control:Continuous_TwoMountainCarEnv',
     max_episode_steps=999,
@@ -342,6 +349,13 @@ register(
 )
 
 register(
+    id='SparseInvertedPendulum-v2',
+    entry_point='gym.envs.mujoco:SparseInvertedPendulumEnv',
+    max_episode_steps=1000,
+    reward_threshold=1000.0,
+)
+
+register(
     id='InvertedDoublePendulum-v2',
     entry_point='gym.envs.mujoco:InvertedDoublePendulumEnv',
     max_episode_steps=1000,
@@ -349,10 +363,24 @@ register(
 )
 
 register(
+    id='SparseInvertedDoublePendulum-v2',
+    entry_point='gym.envs.mujoco:SparseInvertedDoublePendulumEnv',
+    max_episode_steps=1000,
+    reward_threshold=1000.0,
+)
+
+register(
     id='HalfCheetah-v2',
     entry_point='gym.envs.mujoco:HalfCheetahEnv',
     max_episode_steps=1000,
     reward_threshold=4800.0,
+)
+
+register(
+    id='SparseHalfCheetah-v2',
+    entry_point='gym.envs.mujoco:SparseHalfCheetahEnv',
+    max_episode_steps=1000,
+    reward_threshold=1000.0,
 )
 
 register(
@@ -370,6 +398,13 @@ register(
 )
 
 register(
+    id='SparseHopper-v2',
+    entry_point='gym.envs.mujoco:SparseHopperEnv',
+    max_episode_steps=1000,
+    reward_threshold=1000.0,
+)
+
+register(
     id='Swimmer-v2',
     entry_point='gym.envs.mujoco:SwimmerEnv',
     max_episode_steps=1000,
@@ -383,10 +418,23 @@ register(
 )
 
 register(
+    id='SparseWalker2d-v2',
+    max_episode_steps=1000,
+    entry_point='gym.envs.mujoco:SparseWalker2dEnv',
+)
+
+register(
     id='Ant-v2',
     entry_point='gym.envs.mujoco:AntEnv',
     max_episode_steps=1000,
     reward_threshold=6000.0,
+)
+
+register(
+    id='SparseAnt-v2',
+    entry_point='gym.envs.mujoco:SparseAntEnv',
+    max_episode_steps=1000,
+    reward_threshold=1000.0,
 )
 
 register(
@@ -399,6 +447,12 @@ register(
 register(
     id='Humanoid-v2',
     entry_point='gym.envs.mujoco:HumanoidEnv',
+    max_episode_steps=1000,
+)
+
+register(
+    id='SparseHumanoid-v2',
+    entry_point='gym.envs.mujoco:SparseHumanoidEnv',
     max_episode_steps=1000,
 )
 
@@ -423,6 +477,12 @@ register(
 register(
     id='HumanoidStandup-v2',
     entry_point='gym.envs.mujoco:HumanoidStandupEnv',
+    max_episode_steps=1000,
+)
+
+register(
+    id='SparseHumanoidStandup-v2',
+    entry_point='gym.envs.mujoco:SparseHumanoidStandupEnv',
     max_episode_steps=1000,
 )
 
