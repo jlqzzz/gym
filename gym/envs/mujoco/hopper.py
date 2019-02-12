@@ -47,10 +47,13 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'hopper.xml', 4)
         utils.EzPickle.__init__(self)
+        self.orig_pos = 0
+        self.cur_pos = 0
 
     def step(self, a):
         posbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
+        self.cur_pos = self.sim.data.qpos[0]
         posafter, height, ang = self.sim.data.qpos[0:3]
         alive_bonus = 1.0
         reward = (posafter - posbefore) / self.dt
@@ -60,7 +63,11 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         done = not (np.isfinite(s).all() and (np.abs(s[2:]) < 100).all() and
                     (height > .7) and (abs(ang) < .2))
         ob = self._get_obs()
-        sparse_reward = 1 if (posafter - posbefore) > 0 else 0
+        if self.cur_pos - self.orig_pos >= 1.:
+            sparse_reward = 1
+            self.orig_pos = self.cur_pos
+        else:
+            sparse_reward = 0
         return ob, sparse_reward, done, dict(show=reward)
         # return ob, reward, done, {}
 
@@ -77,6 +84,7 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             qpos = self.init_qpos + self.np_random.uniform(low=-.005, high=.005, size=self.model.nq)
             qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
             self.set_state(qpos, qvel)
+        self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         return self._get_obs()
 
     def viewer_setup(self):
