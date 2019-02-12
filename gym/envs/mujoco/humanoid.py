@@ -181,6 +181,11 @@ class SparseHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                data.cfrc_ext.flat])
 
     def step(self, a):
+        try:
+            self.orig_pos
+            self.cur_pos
+        except:
+            self.orig_pos = self.cur_pos = mass_center(self.model, self.sim)[0]
         pos_before = mass_center(self.model, self.sim)[0]
         self.do_simulation(a, self.frame_skip)
         pos_after = mass_center(self.model, self.sim)[0]
@@ -198,7 +203,11 @@ class SparseHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #        reward_quadctrl=-quad_ctrl_cost, reward_alive=alive_bonus,
         #        reward_impact=-quad_impact_cost)
 
-        sparse_reward = 1 if (pos_after - pos_before) > 0 else 0
+        if self.cur_pos - self.orig_pos >= 1.:
+            sparse_reward = 1
+            self.orig_pos = self.cur_pos
+        else:
+            sparse_reward = 0
         return state, sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
@@ -210,6 +219,7 @@ class SparseHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
               self.init_qpos + self.np_random.uniform(low=-c, high=c, size=self.model.nq),
               self.init_qvel + self.np_random.uniform(low=-c, high=c, size=self.model.nv,)
           )
+        self.orig_pos = self.cur_pos = mass_center(self.model, self.sim)[0]
         return self._get_obs()
 
     def viewer_setup(self):

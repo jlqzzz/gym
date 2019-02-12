@@ -43,6 +43,11 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         utils.EzPickle.__init__(self)
 
     def step(self, action):
+        try:
+            self.orig_pos
+            self.cur_pos
+        except:
+            self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         xposbefore = self.sim.data.qpos[0]
         self.do_simulation(action, self.frame_skip)
         xposafter = self.sim.data.qpos[0]
@@ -52,7 +57,11 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward = reward_ctrl + reward_run
         done = False
         # return ob, reward, done, dict(reward_run=reward_run, reward_ctrl=reward_ctrl, show=0)
-        sparse_reward = 1 if (xposafter - xposbefore) > 0 else 0
+        if self.cur_pos - self.orig_pos >= 1.:
+            sparse_reward = 1
+            self.orig_pos = self.cur_pos
+        else:
+            sparse_reward = 0
         return ob, sparse_reward, done, dict(show=reward)
 
     def _get_obs(self):
@@ -68,6 +77,7 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             qpos = self.init_qpos + self.np_random.uniform(low=-.1, high=.1, size=self.model.nq)
             qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
             self.set_state(qpos, qvel)
+        self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         return self._get_obs()
 
     def viewer_setup(self):

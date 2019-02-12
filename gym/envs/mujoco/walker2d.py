@@ -50,6 +50,11 @@ class SparseWalker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         utils.EzPickle.__init__(self)
 
     def step(self, a):
+        try:
+            self.orig_pos
+            self.cur_pos
+        except:
+            self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         posbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
         posafter, height, ang = self.sim.data.qpos[0:3]
@@ -60,7 +65,11 @@ class SparseWalker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         done = not (height > 0.8 and height < 2.0 and
                     ang > -1.0 and ang < 1.0)
         ob = self._get_obs()
-        sparse_reward = 1 if (posafter - posbefore) > 0 else 0
+        if self.cur_pos - self.orig_pos >= 1.:
+            sparse_reward = 1
+            self.orig_pos = self.cur_pos
+        else:
+            sparse_reward = 0
         return ob, sparse_reward, done, dict(show=reward)
         # return ob, reward, done, {}
 
@@ -77,6 +86,7 @@ class SparseWalker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                 self.init_qpos + self.np_random.uniform(low=-.005, high=.005, size=self.model.nq),
                 self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
             )
+        self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         return self._get_obs()
 
     def viewer_setup(self):

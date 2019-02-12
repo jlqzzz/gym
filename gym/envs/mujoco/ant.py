@@ -54,6 +54,11 @@ class SparseAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         utils.EzPickle.__init__(self)
 
     def step(self, a):
+        try:
+            self.orig_pos
+            self.cur_pos
+        except:
+            self.orig_pos = self.cur_pos = self.get_body_com("torso")[0]
         xposbefore = self.get_body_com("torso")[0]
         self.do_simulation(a, self.frame_skip)
         xposafter = self.get_body_com("torso")[0]
@@ -74,7 +79,11 @@ class SparseAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #     reward_contact=-contact_cost,
         #     reward_survive=survive_reward)
 
-        sparse_reward = 1 if (xposafter - xposbefore) > 0 else 0
+        if self.cur_pos - self.orig_pos >= 1.:
+            sparse_reward = 1
+            self.orig_pos = self.cur_pos
+        else:
+            sparse_reward = 0
         return ob, sparse_reward, done, dict(show=reward)
 
     def _get_obs(self):
@@ -91,6 +100,7 @@ class SparseAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)
             qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
             self.set_state(qpos, qvel)
+        self.orig_pos = self.cur_pos = self.get_body_com("torso")[0]
         return self._get_obs()
 
     def viewer_setup(self):
