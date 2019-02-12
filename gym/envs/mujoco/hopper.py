@@ -78,6 +78,8 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         ])
 
     def reset_model(self, init_state):
+        self.orig_pos = 0
+        self.cur_pos = 0
         if init_state:
             self.set_state(init_state[0], init_state[1])
         else:
