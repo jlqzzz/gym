@@ -62,7 +62,7 @@ class SparseInvertedDoublePendulumEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         alive_bonus = 10
         r = alive_bonus - dist_penalty - vel_penalty
         done = bool(y <= 1)
-        sparse_reward = 1 if self.sim.data.site_xpos[0] > 1.19 else 0
+        sparse_reward = 1 if self.sim.data.site_xpos[0, -1] > 1.19 else 0
         return ob, sparse_reward, done, dict(show=r)
 
     def _get_obs(self):
