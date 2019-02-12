@@ -75,7 +75,7 @@ class SparseHumanoidStandupEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
         done = bool(False)
         # return self._get_obs(), reward, done, dict(reward_linup=uph_cost, reward_quadctrl=-quad_ctrl_cost, reward_impact=-quad_impact_cost)
-        sparse_reward = 1 if self.get_body_com('torso')[-1] > 1.1 else 0
+        sparse_reward = 1 if self.sim.data.get_geom_xpos('head')[-1] > 1.2 else 0
         return self._get_obs(), sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
