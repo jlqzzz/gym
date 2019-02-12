@@ -44,7 +44,7 @@ class SparseInvertedPendulumEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         ob = self._get_obs()
         notdone = np.isfinite(ob).all() and (np.abs(ob[1]) <= .2)
         done = not notdone
-        sparse_reward = 1 if self.get_body_com('pole')[-1] > 0.29 else 0
+        sparse_reward = 1 if self.get_body_com('top')[-1] > 0.59 else 0
         return ob, sparse_reward, done, dict(show=reward)
 
     def reset_model(self, init_state=None):
