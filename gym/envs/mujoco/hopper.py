@@ -47,10 +47,13 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
         mujoco_env.MujocoEnv.__init__(self, 'hopper.xml', 4)
         utils.EzPickle.__init__(self)
-        self.orig_pos = 0
-        self.cur_pos = 0
 
     def step(self, a):
+        try:
+            self.orig_pos
+            self.cur_pos
+        except:
+            self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         posbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
         self.cur_pos = self.sim.data.qpos[0]
@@ -78,8 +81,6 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         ])
 
     def reset_model(self, init_state):
-        self.orig_pos = 0
-        self.cur_pos = 0
         if init_state:
             self.set_state(init_state[0], init_state[1])
         else:
