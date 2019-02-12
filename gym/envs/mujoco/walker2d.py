@@ -57,6 +57,7 @@ class SparseWalker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         posbefore = self.sim.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
+        self.cur_pos = self.sim.data.qpos[0]
         posafter, height, ang = self.sim.data.qpos[0:3]
         alive_bonus = 1.0
         reward = ((posafter - posbefore) / self.dt)

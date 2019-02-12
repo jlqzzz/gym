@@ -61,6 +61,7 @@ class SparseAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.orig_pos = self.cur_pos = self.get_body_com("torso")[0]
         xposbefore = self.get_body_com("torso")[0]
         self.do_simulation(a, self.frame_skip)
+        self.cur_pos = self.get_body_com("torso")[0]
         xposafter = self.get_body_com("torso")[0]
         forward_reward = (xposafter - xposbefore)/self.dt
         ctrl_cost = .5 * np.square(a).sum()

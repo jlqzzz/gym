@@ -188,6 +188,7 @@ class SparseHumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.orig_pos = self.cur_pos = mass_center(self.model, self.sim)[0]
         pos_before = mass_center(self.model, self.sim)[0]
         self.do_simulation(a, self.frame_skip)
+        self.cur_pos = mass_center(self.model, self.sim)[0]
         pos_after = mass_center(self.model, self.sim)[0]
         alive_bonus = 5.0
         data = self.sim.data

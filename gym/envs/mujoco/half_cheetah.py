@@ -50,6 +50,7 @@ class SparseHalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         xposbefore = self.sim.data.qpos[0]
         self.do_simulation(action, self.frame_skip)
+        self.cur_pos = self.sim.data.qpos[0]
         xposafter = self.sim.data.qpos[0]
         ob = self._get_obs()
         reward_ctrl = - 0.1 * np.square(action).sum()
