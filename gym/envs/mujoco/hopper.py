@@ -55,7 +55,11 @@ class SparseHopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         except:
             self.orig_pos = self.cur_pos = self.sim.data.qpos[0]
         posbefore = self.sim.data.qpos[0]
-        self.do_simulation(a, self.frame_skip)
+        try:
+            self.do_simulation(np.clip(a, a_min=-1, a_max=1.0), self.frame_skip)
+        except:
+            ob = self.reset_model(None)
+            return ob, 0, True, dict(show=0)
         self.cur_pos = self.sim.data.qpos[0]
         posafter, height, ang = self.sim.data.qpos[0:3]
         alive_bonus = 1.0
