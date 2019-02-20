@@ -257,6 +257,20 @@ register(
 )
 
 register(
+    id='SparseReacher-v2',
+    entry_point='gym.envs.mujoco:SparseReacherEnv',
+    max_episode_steps=50,
+    reward_threshold=-3.75,
+)
+
+register(
+    id='RobustReacher-v2',
+    entry_point='gym.envs.mujoco:RobustReacherEnv',
+    max_episode_steps=50,
+    reward_threshold=-3.75,
+)
+
+register(
     id='VisualReacher-v1',
     entry_point='gym.envs.mujoco:VisualReacherEnv',
     max_episode_steps=150,

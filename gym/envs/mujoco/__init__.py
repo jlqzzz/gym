@@ -9,7 +9,7 @@ from gym.envs.mujoco.walker2d import Walker2dEnv, SparseWalker2dEnv
 from gym.envs.mujoco.humanoid import HumanoidEnv, SparseHumanoidEnv, VisualHumanoidEnv, HumanoidCMUEnv, HumanoidCMUSimpleEnv
 from gym.envs.mujoco.inverted_pendulum import InvertedPendulumEnv, SparseInvertedPendulumEnv
 from gym.envs.mujoco.inverted_double_pendulum import InvertedDoublePendulumEnv, SparseInvertedDoublePendulumEnv
-from gym.envs.mujoco.reacher import ReacherEnv, VisualReacherEnv, BaxterReacherEnv, BaxterRightReacherEnv, BaxterLeftReacherEnv, UR5ReacherEnv, UR5ReacherAccEnv, ReacherPosEnv, ReacherDoneEnv, TwoReacherEnv, ReacherObsDoneEnv, ReacherSpeedEnv
+from gym.envs.mujoco.reacher import ReacherEnv, SparseReacherEnv, RobustReacherEnv, VisualReacherEnv, BaxterReacherEnv, BaxterRightReacherEnv, BaxterLeftReacherEnv, UR5ReacherEnv, UR5ReacherAccEnv, ReacherPosEnv, ReacherDoneEnv, TwoReacherEnv, ReacherObsDoneEnv, ReacherSpeedEnv
 from gym.envs.mujoco.swimmer import SwimmerEnv
 from gym.envs.mujoco.humanoidstandup import HumanoidStandupEnv, SparseHumanoidStandupEnv
 from gym.envs.mujoco.pusher import PusherEnv
