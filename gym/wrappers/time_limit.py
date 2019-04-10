@@ -41,4 +41,7 @@ class TimeLimit(Wrapper):
     def reset(self, reset_type=None):
         self._episode_started_at = time.time()
         self._elapsed_steps = 0
-        return self.env.reset(reset_type)
+        try:
+            return self.env.reset(reset_type)
+        except:
+            return self.env.reset()
